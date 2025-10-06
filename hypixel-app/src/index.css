@@ -5,7 +5,6 @@
 
   color-scheme: light dark;
   color: rgba(255, 255, 255, 0.87);
-  background-color: #242424;
 
   font-synthesis: none;
   text-rendering: optimizeLegibility;
@@ -28,15 +27,25 @@ body {
   place-items: center;
   min-width: 320px;
   min-height: 100vh;
-  background-color: peachpuff;
+  background-color: rgb(43, 43, 43) !important;
 }
 
 h1 {
   font-size: 3.2em;
   line-height: 1.1;
+  background: linear-gradient(to right, magenta, purple);
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
 }
 
+.card {
+  opacity: 0.95;
+}
 
+.card li {
+  color: white !important;
+}
 
 button {
   border-radius: 8px;

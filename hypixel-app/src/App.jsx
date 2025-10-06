@@ -36,11 +36,14 @@ function App() {
                 <p className="card-text">
                   <strong>ID:</strong> {item.id}
                   <br />
-                  <strong>Tier:</strong> {item.tier}
+                  <strong>Rarity:</strong> {item.tier}
                   <br />
                   <strong>Category:</strong> {item.category}
                   <br />
                   <strong>Material:</strong> {item.material}
+                  <br />
+                  <strong>NPC Sell price:</strong> {item.npc_sell_price}:-
+                  <br />
                 </p>
               </div>
             </div>
