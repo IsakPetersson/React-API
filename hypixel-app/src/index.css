@@ -28,11 +28,22 @@ body {
   place-items: center;
   min-width: 320px;
   min-height: 100vh;
+  background-color: peachpuff;
 }
 
 h1 {
   font-size: 3.2em;
   line-height: 1.1;
+}
+
+li {
+  background-color: white;
+  margin-top: 10px;
+  max-width: 300px;
+  box-shadow: #213547 0px 0px 8px;
+  padding-left: 5px;
+  list-style-type: none;
+  border-radius: 8px;
 }
 
 button {

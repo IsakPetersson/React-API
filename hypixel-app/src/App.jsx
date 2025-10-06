@@ -17,7 +17,7 @@ function App() {
       });
   }, []);
 
-  if (loading) return <p>Laddar items...</p>;
+  if (loading) return <h1>Loading items...</h1>;
 
   return (
     
@@ -32,8 +32,14 @@ function App() {
             <br />
             {item.category}
             <br />
-            {item.color}
+            {item.material}
             <br />
+            <br />
+            <img
+                src={`https://sky.shiiyu.moe/item/${encodeURIComponent(item.id)}`}
+                alt={'${encodeURIComponent(item.name)}'}
+                className="item-image"
+                />
           </li>
         ))}
       </ul>
