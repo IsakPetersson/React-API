@@ -1,17 +1,17 @@
 import { useEffect, useState } from "react";
-import ItemList from "./components/ItemList";
 import NavBar from "./components/NavBar";
+import { Routes, Route } from "react-router-dom";
+import Items from "./pages/Items";
+import Login from "./pages/Login";
 
 function App() {
   return (
-    <div style={{ marginLeft: "200px" }}> {/* Add margin to avoid overlap */}
+    <div style={{ marginLeft: "200px" }}>
       <NavBar />
-      <div className="center-container">
-        <div>
-          <h1 className="text-center mb-4">Hypixel Skyblock Items</h1>
-          <ItemList />
-        </div>
-      </div>
+      <Routes>
+        <Route path="/" element={<Items />} /> {/* Home page */}
+        <Route path="/login" element={<Login />} /> {/* Login page */}
+      </Routes>
     </div>
   );
 }
