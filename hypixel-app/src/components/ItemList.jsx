@@ -40,7 +40,7 @@ export default function ItemList() {
                 <br />
                 <strong>Category:</strong> {item.category}
                 <br />
-                <strong>Material:</strong> {item.material}
+                <strong>Type:</strong> {item.material}
                 <br />
                 <strong>NPC Sell price:</strong> {item.npc_sell_price}:-
                 <br />

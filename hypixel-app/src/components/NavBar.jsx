@@ -21,6 +21,9 @@ function NavBar() {
           <a href="#" style={{ color: "#fff", textDecoration: "none" }}>Home</a>
         </li>
         <li style={{ marginBottom: "15px" }}>
+          <a href="#" style={{ color: "#fff", textDecoration: "none" }}>Login</a>
+        </li>
+        <li style={{ marginBottom: "15px" }}>
           <a href="#" style={{ color: "#fff", textDecoration: "none" }}>Items</a>
         </li>
         <li>
