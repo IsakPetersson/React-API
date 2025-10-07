@@ -22,11 +22,11 @@ export default function ItemList() {
   return (
     <div className="row">
       {items.slice(0, 80).map((item, index) => (
-        <div key={index} className="col-md-4 col-lg-3 mb-4">
+        <div key={index} className="col-md-4 col-lg-3 mb-4"> {/* Adjusted col-lg-2 */}
           <div className="card h-100">
             <div className="cardtop">
               <img
-                src={`https://sky.shiiyu.moe/item/${encodeURIComponent(item.id)}`}
+                src={`./images/${item.material}.png`}
                 className="card-img-top p-3"
                 alt={item.id}
               />
@@ -36,11 +36,15 @@ export default function ItemList() {
               <p className="card-text">
                 <strong>ID:</strong> {item.id}
                 <br />
-                <strong>Rarity:</strong> {item.tier}
+                <strong>Rarity:</strong> {item.tier ? item.tier.charAt(0).toUpperCase() + item.tier.slice(1).toLowerCase() : "unknown"}
                 <br />
-                <strong>Category:</strong> {item.category}
+                <strong>Category:</strong> {item.category ? item.category.charAt(0).toUpperCase() + item.category.slice(1).toLowerCase() : "unknown"}
                 <br />
-                <strong>Type:</strong> {item.material}
+                <strong>Type:</strong> {item.material ? item.material
+                  .toLowerCase()
+                  .split('_')
+                  .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+                  .join(' ') : "Unknown"} 
                 <br />
                 <strong>NPC Sell price:</strong> {item.npc_sell_price}:-
                 <br />
