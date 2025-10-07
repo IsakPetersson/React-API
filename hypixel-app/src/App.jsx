@@ -1,11 +1,15 @@
 import { useEffect, useState } from "react";
 import ItemList from "./components/ItemList";
+import NavBar from "./components/NavBar";
 
 function App() {
   return (
-    <div className="container mt-4">
-      <h1 className="text-center mb-4">Hypixel Skyblock Items</h1>
-      <ItemList />
+    <div style={{ marginLeft: "200px" }}> {/* Add margin to avoid overlap */}
+      <NavBar />
+      <div className="container mt-4">
+        <h1 className="text-center mb-4">Hypixel Skyblock Items</h1>
+        <ItemList />
+      </div>
     </div>
   );
 }
