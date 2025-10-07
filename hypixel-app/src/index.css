@@ -47,6 +47,15 @@ h1 {
   color: white !important;
 }
 
+.cardtop {
+  background: linear-gradient(90deg, magenta, purple);
+}
+
+.card-body {
+  background-color: #444444;
+  color: white !important;
+}
+
 button {
   border-radius: 8px;
   border: 1px solid transparent;
