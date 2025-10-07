@@ -40,8 +40,12 @@ export default function LoginCard() {
                     <button type="submit" className="btn btn-primary w-100">
                         Login
                     </button>
+
+                    <a href="/register" className="btn btn-link w-100 mt-2">Register</a>
+
                 </form>
             </div>
         </div>
     );
 }
+
