@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 
 export default function ItemList() {
   const [items, setItems] = useState([]);
-  const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState(""); // State for search input
 
   useEffect(() => {
@@ -10,15 +9,12 @@ export default function ItemList() {
       .then((res) => res.json())
       .then((data) => {
         setItems(data.items); // API returns { success: true, items: [...] }
-        setLoading(false);
       })
       .catch((err) => {
         console.error("Error fetching items:", err);
-        setLoading(false);
       });
   }, []);
 
-  if (loading) return <h1>Loading items...</h1>;
 
   // Search bar filtering
   const filteredItems = items.filter((item) =>
