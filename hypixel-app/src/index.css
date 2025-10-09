@@ -34,10 +34,13 @@ body {
 .mainTitle {
   font-size: 5.2em;
   line-height: 1.1;
-  background: linear-gradient(to right, #d86cfc, #E732AA);
+  background: linear-gradient(to right, #d86cfc, #E732AA, #d86cfc); /* Adjusted for a seamless loop */
   background-clip: text;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
+  /* Add these properties for the animation */
+  background-size: 200% 100%;
+  animation: rotate-gradient 4s linear infinite;
 }
 
 .card {
@@ -85,6 +88,7 @@ button:focus-visible {
   align-items: center; /* Center items horizontally */
   margin: 10px;
   padding: 50px;
+  margin: auto;
   width: 80%;
 }
 
@@ -93,18 +97,38 @@ button:focus-visible {
 }
 
 .searchItems {
-  /* Use background for the gradient instead of border-image */
-  background: linear-gradient(to right, magenta, purple);
-  border-radius: 15px; /* This will now apply correctly */
-  padding: 3px; /* This padding creates the border thickness */
-  /* The input field inside will cover this background, leaving only the padding visible as a border */
+  background: linear-gradient(to right, magenta, #E732AA, #d86cfc, magenta);
+  border-radius: 15px;
+  padding: 3px; 
   min-width: 200px;
+  /* Make the background much larger than the element */
+  background-size: 300% 100%; 
+  /* Add a smooth transition for when focus is lost */
+  transition: background-position 0.5s ease-out;
+}
+
+/* Apply the animation when the input inside is focused */
+.searchItems:focus-within {
+  animation: rotate-gradient 4s linear infinite;
 }
 
 /* Style the input field itself */
 .searchItems input.form-control {
   border-radius: 13px; /* Slightly smaller radius to fit inside the wrapper */
   border: none; /* Remove the default input border */
+}
+
+/* Keyframe animation for the gradient rotation */
+@keyframes rotate-gradient {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
 }
 
 @media (prefers-color-scheme: light) {

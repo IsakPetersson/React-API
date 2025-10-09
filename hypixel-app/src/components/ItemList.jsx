@@ -4,6 +4,7 @@ export default function ItemList() {
   const [items, setItems] = useState([]);
   const [searchTerm, setSearchTerm] = useState(""); // State for search input
 
+  // Fetch items fron Hypixel API
   useEffect(() => {
     fetch("https://api.hypixel.net/v2/resources/skyblock/items")
       .then((res) => res.json())
@@ -14,7 +15,6 @@ export default function ItemList() {
         console.error("Error fetching items:", err);
       });
   }, []);
-
 
   // Search bar filtering
   const filteredItems = items.filter((item) =>
