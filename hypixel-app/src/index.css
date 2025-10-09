@@ -97,6 +97,7 @@ button:focus-visible {
   border-radius: 15px; /* This will now apply correctly */
   padding: 3px; /* This padding creates the border thickness */
   /* The input field inside will cover this background, leaving only the padding visible as a border */
+  min-width: 200px;
 }
 
 /* Style the input field itself */
