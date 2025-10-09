@@ -25,6 +25,11 @@ export default function NavBar() {
           </Link>
         </li>
         <li style={{ marginBottom: "15px" }}>
+          <Link to="/profiles" style={{ color: "#fff", textDecoration: "none" }}>
+            Player Profiles
+          </Link>
+        </li>
+        <li style={{ marginBottom: "15px" }}>
           <Link to="/login" style={{ color: "#fff", textDecoration: "none" }}>
             Login
           </Link>
