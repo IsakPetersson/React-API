@@ -21,9 +21,9 @@ export default function ItemList() {
 
   return (
     <div className="row">
-      {items.slice(0, 80).map((item, index) => (
+      {items.slice(0, 200).map((item, index) => (
         <div key={index} className="col-md-4 col-lg-3 mb-4"> {/* Adjusted col-lg-2 */}
-          <div className="card h-100">
+          <div className="card h-100 border-0">
             <div className="cardtop">
               <img
                 src={`./images/${item.material}.png`}
@@ -38,13 +38,17 @@ export default function ItemList() {
                 <br />
                 <strong>Rarity:</strong> {item.tier ? item.tier.charAt(0).toUpperCase() + item.tier.slice(1).toLowerCase() : "unknown"}
                 <br />
-                <strong>Category:</strong> {item.category ? item.category.charAt(0).toUpperCase() + item.category.slice(1).toLowerCase() : "unknown"}
+                <strong>Category:</strong> {item.category ? item.category
+                  .toLowerCase()
+                  .split('_')
+                  .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+                  .join(' ') : "unknown"} 
                 <br />
                 <strong>Type:</strong> {item.material ? item.material
                   .toLowerCase()
                   .split('_')
                   .map(word => word.charAt(0).toUpperCase() + word.slice(1))
-                  .join(' ') : "Unknown"} 
+                  .join(' ') : "unknown"} 
                 <br />
                 <strong>NPC Sell price:</strong> {item.npc_sell_price}:-
                 <br />

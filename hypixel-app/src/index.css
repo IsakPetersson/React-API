@@ -84,6 +84,7 @@ button:focus-visible {
   justify-content: center; /* Center items vertically */
   align-items: center; /* Center items horizontally */
   margin: 10px;
+  padding: 50px;
 }
 
 @media (prefers-color-scheme: light) {
