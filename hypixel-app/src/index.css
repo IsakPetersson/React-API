@@ -31,8 +31,8 @@ body {
   background-color: rgb(43, 43, 43) !important;
 }
 
-h1 {
-  font-size: 3.2em;
+.mainTitle {
+  font-size: 5.2em;
   line-height: 1.1;
   background: linear-gradient(to right, magenta, purple);
   background-clip: text;
@@ -85,6 +85,25 @@ button:focus-visible {
   align-items: center; /* Center items horizontally */
   margin: 10px;
   padding: 50px;
+}
+
+.itemsList {
+  width: 100%;
+}
+
+.searchItems {
+  /* Use background for the gradient instead of border-image */
+  background: linear-gradient(to right, magenta, purple);
+  border-radius: 15px; /* This will now apply correctly */
+  padding: 3px; /* This padding creates the border thickness */
+  /* The input field inside will cover this background, leaving only the padding visible as a border */
+  min-width: 200px;
+}
+
+/* Style the input field itself */
+.searchItems input.form-control {
+  border-radius: 13px; /* Slightly smaller radius to fit inside the wrapper */
+  border: none; /* Remove the default input border */
 }
 
 @media (prefers-color-scheme: light) {
