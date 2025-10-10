@@ -21,6 +21,23 @@ export default function ItemList() {
     item.name.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
+  // Helper function to get color based on rarity
+  const getRarityStyle = (tier) => {
+    const rarityColors = {
+      COMMON: "linear-gradient(90deg, #bababa, #e8e8e8)",
+      UNCOMMON: "linear-gradient(90deg, #55FF55, #adffad)",
+      RARE: "linear-gradient(90deg, #5555FF, #adadff)",
+      EPIC: "linear-gradient(90deg, #AA00AA, #ffadff)",
+      LEGENDARY: "linear-gradient(90deg, #FFAA00, #ffdead)",
+      MYTHIC: "linear-gradient(90deg, #FF55FF, #ffadff)",
+      DIVINE: "linear-gradient(90deg, #55FFFF, #adffff)",
+      SPECIAL: "linear-gradient(90deg, #FF5555, #ffadad)",
+      VERY_SPECIAL: "linear-gradient(90deg, #FF5555, #ffadad)",
+    };
+    const background = tier ? rarityColors[tier.toUpperCase()] : "linear-gradient(90deg, magenta, purple)";
+    return { background };
+  };
+
   return (
     <div className="itemsList">
       {/* Search Input */}
@@ -39,7 +56,7 @@ export default function ItemList() {
         {filteredItems.slice(0, 200).map((item, index) => (
           <div key={index} className="col-md-4 col-lg-3 mb-4">
             <div className="card h-100 border-0">
-              <div className="cardtop">
+              <div className="cardtop" style={getRarityStyle(item.tier)}>
                 <img
                   src={`./images/${item.material}.png`}
                   className="card-img-top p-3"
@@ -81,7 +98,7 @@ export default function ItemList() {
                         .join(" ")
                     : "unknown"}
                   <br />
-                  <strong>NPC Sell price:</strong> {item.npc_sell_price}:-
+                  <strong>NPC Sell price:</strong> {item.npc_sell_price}:- 
                   <br />
                 </p>
               </div>
