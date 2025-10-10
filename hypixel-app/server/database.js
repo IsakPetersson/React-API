@@ -10,7 +10,7 @@ export async function setupDatabase() {
 
   // Use migrate to create tables. It's safer as it only runs if tables don't exist.
   await db.migrate({
-    migrationsPath: "./server/migrations", // We'll create this folder next
+    migrationsPath: "./server/migrations", 
   });
 
   console.log("Database setup complete.");
