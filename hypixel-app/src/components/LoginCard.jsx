@@ -2,8 +2,8 @@ import React from "react";
 
 export default function LoginCard() {
     return (
-        <div className="card mx-auto mt-5" style={{ maxWidth: "1000px" }}>
-            <div className="card-body">
+        <div className="card mx-auto mt-5" style={{ maxWidth: "60%", minWidth: "40%", backgroundColor: "#222" }}>
+            <div className="card-body" style={{ backgroundColor: "#222" }}>
                 <h3 className="card-title text-center mb-4">Login</h3>
                 <form
                     onSubmit={e => {
@@ -37,11 +37,11 @@ export default function LoginCard() {
                             required
                         />
                     </div>
-                    <button type="submit" className="btn btn-primary w-100">
+                    <button type="submit" className="btn btn-primary w-100 buttonFade" style={{ backgroundColor: "#007bff", border: "none" }}>
                         Login
                     </button>
 
-                    <a href="/register" className="btn btn-link w-100 mt-2">Register</a>
+                    <a href="/register" className="btn btn-link w-100 mt-2 linkFade">Register</a>
 
                 </form>
             </div>

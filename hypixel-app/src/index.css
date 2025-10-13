@@ -34,7 +34,8 @@ body {
 .mainTitle {
   font-size: 5.2em;
   line-height: 1.1;
-  background: linear-gradient(to right, #d86cfc, #E732AA, #d86cfc); /* Adjusted for a seamless loop */
+  background: linear-gradient(to right, #d86cfc, #E732AA, #d86cfc);
+  /* Adjusted for a seamless loop */
   background-clip: text;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
@@ -83,9 +84,12 @@ button:focus-visible {
 
 .center-container {
   display: flex;
-  flex-direction: column; /* Stack items vertically */
-  justify-content: center; /* Center items vertically */
-  align-items: center; /* Center items horizontally */
+  flex-direction: column;
+  /* Stack items vertically */
+  justify-content: center;
+  /* Center items vertically */
+  align-items: center;
+  /* Center items horizontally */
   margin: auto;
   width: 120vh;
 }
@@ -97,10 +101,10 @@ button:focus-visible {
 .searchItems {
   background: linear-gradient(to right, magenta, #E732AA, #d86cfc, magenta);
   border-radius: 15px;
-  padding: 3px; 
+  padding: 3px;
   min-width: 200px;
   /* Make the background much larger than the element */
-  background-size: 300% 100%; 
+  background-size: 300% 100%;
   /* Add a smooth transition for when focus is lost */
   transition: background-position 0.5s ease-out;
 }
@@ -112,8 +116,27 @@ button:focus-visible {
 
 /* Style the input field itself */
 .searchItems input.form-control {
-  border-radius: 13px; /* Slightly smaller radius to fit inside the wrapper */
-  border: none; /* Remove the default input border */
+  border-radius: 13px;
+  /* Slightly smaller radius to fit inside the wrapper */
+  border: none;
+  /* Remove the default input border */
+}
+
+.buttonFade {
+  background: linear-gradient(to right, #d86cfc, #E732AA, #d86cfc);
+  background-size: 200% 100%;
+  animation: rotate-gradient 4s linear infinite;
+}
+
+.linkFade {
+  background: linear-gradient(to right, #d86cfc, #E732AA, #d86cfc);
+  background-size: 200% 100%;
+  animation: rotate-gradient 4s linear infinite;
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
+  -webkit-text-fill-color: transparent;
+  border: none;
 }
 
 /* Keyframe animation for the gradient rotation */
@@ -121,9 +144,11 @@ button:focus-visible {
   0% {
     background-position: 0% 50%;
   }
+
   50% {
     background-position: 100% 50%;
   }
+
   100% {
     background-position: 0% 50%;
   }
