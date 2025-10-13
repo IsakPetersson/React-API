@@ -5,8 +5,6 @@ import Items from "./pages/Items";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 
-
-
 function App() {
   return (
     <div style={{ marginLeft: "200px" }}>
@@ -14,8 +12,7 @@ function App() {
       <Routes>
         <Route path="/" element={<Items />} /> {/* Home page */}
         <Route path="/login" element={<Login />} /> {/* Login page */}
-        <Route path="/register" element={<Register />} /> {/* Register page */}
-
+  <Route path="/register" element={<Register />} /> {/* Register page */}
       </Routes>
     </div>
   );
