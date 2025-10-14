@@ -71,6 +71,26 @@ async function ensureSchema() {
 			END`);
 
 		console.log('Schema verified/updated.');
+			// Create Favorites table if missing
+			await rq.query(`IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[Favorites]') AND type in (N'U'))
+			BEGIN
+				CREATE TABLE [dbo].[Favorites] (
+					[Id] INT IDENTITY(1,1) NOT NULL PRIMARY KEY,
+					[UserId] INT NOT NULL,
+					[ItemId] NVARCHAR(100) NOT NULL,
+					[ItemName] NVARCHAR(255) NULL,
+					[CreatedAt] DATETIME2 NOT NULL DEFAULT SYSUTCDATETIME(),
+					CONSTRAINT FK_Favorites_Users FOREIGN KEY (UserId) REFERENCES dbo.Users(Id) ON DELETE CASCADE
+				);
+			END`);
+
+			// Unique composite index to prevent duplicate favorites per user
+			await rq.query(`IF NOT EXISTS (
+					SELECT 1 FROM sys.indexes WHERE name = 'IX_Favorites_User_Item' AND object_id = OBJECT_ID('dbo.Favorites')
+				)
+				CREATE UNIQUE INDEX IX_Favorites_User_Item ON dbo.Favorites(UserId, ItemId);`);
+
+			console.log('Favorites schema verified/updated.');
 	} catch (err) {
 		console.error('Schema ensure error:', err.message);
 	}
@@ -126,6 +146,64 @@ app.post('/api/login', async (req, res) => {
 		return res.json({ message: 'ok', user: { id: user.Id, username: user.Username } });
 	} catch (err) {
 		console.error('Login error:', err);
+		return res.status(500).json({ error: 'server error' });
+	}
+});
+
+// List favorites for a user: GET /api/favorites?userId=123
+app.get('/api/favorites', async (req, res) => {
+	const userId = parseInt(req.query.userId, 10);
+	if (!userId) return res.status(400).json({ error: 'userId is required' });
+	try {
+		await poolConnect;
+		const result = await pool.request()
+			.input('userId', sql.Int, userId)
+			.query('SELECT ItemId, ItemName, CreatedAt FROM dbo.Favorites WHERE UserId = @userId ORDER BY CreatedAt DESC');
+		return res.json(result.recordset);
+	} catch (err) {
+		console.error('Favorites list error:', err);
+		return res.status(500).json({ error: 'server error' });
+	}
+});
+
+// Add a favorite: POST /api/favorites { userId, itemId, itemName? }
+app.post('/api/favorites', async (req, res) => {
+	const { userId, itemId, itemName } = req.body || {};
+	if (!userId || !itemId) return res.status(400).json({ error: 'userId and itemId are required' });
+	try {
+		await poolConnect;
+		// Ensure user exists
+		const u = await pool.request().input('uid', sql.Int, userId).query('SELECT 1 FROM dbo.Users WHERE Id = @uid');
+		if (u.recordset.length === 0) return res.status(404).json({ error: 'user not found' });
+
+		// Upsert-like insert ignoring duplicates
+		await pool.request()
+			.input('uid', sql.Int, userId)
+			.input('iid', sql.NVarChar(100), itemId)
+			.input('iname', sql.NVarChar(255), itemName || null)
+			.query(`IF NOT EXISTS (SELECT 1 FROM dbo.Favorites WHERE UserId = @uid AND ItemId = @iid)
+							INSERT INTO dbo.Favorites (UserId, ItemId, ItemName) VALUES (@uid, @iid, @iname);`);
+		return res.status(201).json({ message: 'favorited' });
+	} catch (err) {
+		console.error('Favorites add error:', err);
+		return res.status(500).json({ error: 'server error' });
+	}
+});
+
+// Remove a favorite: DELETE /api/favorites { userId, itemId }
+app.delete('/api/favorites', async (req, res) => {
+	const { userId, itemId } = req.body || {};
+	if (!userId || !itemId) return res.status(400).json({ error: 'userId and itemId are required' });
+	try {
+		await poolConnect;
+		const r = await pool.request()
+			.input('uid', sql.Int, userId)
+			.input('iid', sql.NVarChar(100), itemId)
+			.query('DELETE FROM dbo.Favorites WHERE UserId = @uid AND ItemId = @iid');
+		if (r.rowsAffected?.[0] === 0) return res.status(404).json({ error: 'favorite not found' });
+		return res.json({ message: 'unfavorited' });
+	} catch (err) {
+		console.error('Favorites delete error:', err);
 		return res.status(500).json({ error: 'server error' });
 	}
 });

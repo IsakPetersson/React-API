@@ -1,9 +1,11 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 export default function LoginCard() {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState("");
     const [success, setSuccess] = useState("");
+    const navigate = useNavigate();
 
     async function onLogin(username, password) {
         setLoading(true);
@@ -17,7 +19,13 @@ export default function LoginCard() {
             });
             const data = await res.json();
             if (!res.ok) throw new Error(data?.error || 'Login failed');
-            setSuccess(`Welcome, ${data?.user?.username || username}!`);
+            // Persist user to localStorage so Items page can load their favorites
+            if (data?.user) {
+                try { localStorage.setItem('user', JSON.stringify(data.user)); } catch {}
+            }
+            setSuccess(`Welcome, ${data?.user?.username || username}! Redirecting...`);
+            // Short delay for UX, then navigate to home
+            setTimeout(() => navigate('/'), 300);
         } catch (e) {
             setError(e.message);
         } finally {
