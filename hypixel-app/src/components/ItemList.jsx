@@ -108,11 +108,11 @@ export default function ItemList() {
     setFavorites(new Set());
   }
 
-  // Helper function to get color based on rarity
+  // Helper function to get GRADIENT color based on rarity
   const getRarityStyle = (tier) => {
     const rarityColors = {
       COMMON: "linear-gradient(90deg, #bababa, #e8e8e8)",
-      UNCOMMON: "linear-gradient(90deg, #55FF55, #adffad)",
+      UNCOMMON: "linear-gradient(90deg, #44cd44, #adffad)",
       RARE: "linear-gradient(90deg, #5555FF, #adadff)",
       EPIC: "linear-gradient(90deg, #AA00AA, #ffadff)",
       LEGENDARY: "linear-gradient(90deg, #FFAA00, #ffdead)",
@@ -123,6 +123,23 @@ export default function ItemList() {
     };
     const background = tier ? rarityColors[tier.toUpperCase()] : "linear-gradient(90deg, magenta, purple)";
     return { background };
+  };
+
+  // Helper function to get SOLID color for the rarity box
+  const getRarityBoxStyle = (tier) => {
+    const raritySolidColors = {
+      COMMON: "#bababa",
+      UNCOMMON: "#44cd44",
+      RARE: "#5555FF",
+      EPIC: "#AA00AA",
+      LEGENDARY: "#FFAA00",
+      MYTHIC: "#FF55FF",
+      DIVINE: "#55FFFF",
+      SPECIAL: "#FF5555",
+      VERY_SPECIAL: "#FF5555",
+    };
+    const backgroundColor = tier ? raritySolidColors[tier.toUpperCase()] : "rgba(0, 0, 0, 0.5)";
+    return { backgroundColor };
   };
 
   return (
@@ -170,17 +187,16 @@ export default function ItemList() {
                 >
                   {isFav(item.id) ? '★' : '☆'}
                 </button>
+                <div className="rarity-display" style={getRarityBoxStyle(item.tier)}>
+                  <span className="rarity-text">
+                    {item.tier ? item.tier.replace('_', ' ') : 'UNKNOWN'}
+                  </span>
+                </div>
               </div>
               <div className="card-body">
                 <h5 className="card-title">{item.name}</h5>
                 <p className="card-text">
                   <strong>ID:</strong> {item.id}
-                  <br />
-                  <strong>Rarity:</strong>{" "}
-                  {item.tier
-                    ? item.tier.charAt(0).toUpperCase() +
-                      item.tier.slice(1).toLowerCase()
-                    : "unknown"}
                   <br />
                   <strong>Category:</strong>{" "}
                   {item.category
