@@ -44,6 +44,19 @@ body {
   animation: rotate-gradient 4s linear infinite;
 }
 
+.altTitle {
+  font-size: 5.2em;
+  line-height: 1.3;
+  background: linear-gradient(to right, #d86cfc, #E732AA, #d86cfc);
+  /* Adjusted for a seamless loop */
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  /* Add these properties for the animation */
+  background-size: 200% 100%;
+  animation: rotate-gradient 4s linear infinite;
+}
+
 .card {
   opacity: 0.95;
 }

@@ -27,7 +27,6 @@ export default function LoginCard() {
     return (
         <div className="card mx-auto mt-5" style={{ maxWidth: "60%", minWidth: "40%", backgroundColor: "#222" }}>
             <div className="card-body" style={{ backgroundColor: "#222" }}>
-                <h3 className="card-title text-center mb-4">Login</h3>
                 <form
                     onSubmit={e => {
                         e.preventDefault();
