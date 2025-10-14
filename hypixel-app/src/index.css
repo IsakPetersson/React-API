@@ -67,6 +67,26 @@ body {
 
 .cardtop {
   background: linear-gradient(90deg, magenta, purple);
+  position: relative; /* Needed for absolute positioning of child */
+}
+
+.fav-btn {
+  position: absolute;
+  bottom: 10px;
+  left: 10px;
+  width: 40px;
+  height: 40px;
+  border-radius: 8px;
+  font-size: 1.5em;
+  line-height: 1;
+  padding: 0;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.fav-btn:hover {
+  transform: scale(1.1);
+  box-shadow: 0 4px 10px rgba(0,0,0,0.3);
 }
 
 .card-body {
@@ -182,6 +202,18 @@ button:focus-visible {
   }
 }
 
+@media (max-width: 500px) {
+
+  .card-body {
+    font-size: 0.8em;
+  }
+
+  .navbar-brand {
+    font-size: 1.2em;
+  }
+}
+
+
 @media (max-width: 600px) {
   .center-container {
     width: 60%;
@@ -189,5 +221,23 @@ button:focus-visible {
 
   .mainTitle {
     font-size: 3.5em;
+  }
+}
+
+@media (max-width: 1200px) {
+  .center-container {
+    width: 90%;
+  }
+
+  .mainTitle {
+    font-size: 3.5em;
+  }
+
+  .fav-btn {
+    width: 30px;
+    height: 30px;
+    font-size: 1.2em;
+    bottom: 5px;
+    left: 5px;
   }
 }
