@@ -14,7 +14,7 @@ export default function NavBar() {
         position: "fixed",
         top: 0,
         left: 0,
-        width: "200px",
+        width: "150px",
       }}
     >
       <h2 style={{ margin: "0 0 20px 0" }}>Hypixel Tracker</h2>

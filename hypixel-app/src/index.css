@@ -74,8 +74,8 @@ body {
   position: absolute;
   bottom: 10px;
   left: 10px;
-  width: 3vh;
-  height: 3vh;
+  width: 40px;
+  height: 40px;
   border-radius: 8px;
   font-size: 1.5em;
   line-height: 1;
@@ -202,6 +202,18 @@ button:focus-visible {
   }
 }
 
+@media (max-width: 500px) {
+
+  .card-body {
+    font-size: 0.8em;
+  }
+
+  .navbar-brand {
+    font-size: 1.2em;
+  }
+}
+
+
 @media (max-width: 600px) {
   .center-container {
     width: 60%;
@@ -219,5 +231,13 @@ button:focus-visible {
 
   .mainTitle {
     font-size: 3.5em;
+  }
+
+  .fav-btn {
+    width: 30px;
+    height: 30px;
+    font-size: 1.2em;
+    bottom: 5px;
+    left: 5px;
   }
 }
