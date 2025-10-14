@@ -138,7 +138,7 @@ export default function ItemList() {
         />
       </div>
 
-      {/* Auth status + Logout */}
+      {/* Auth status + Logout 
       {user ? (
         <div className="mb-3 w-25 mx-auto d-flex justify-content-between align-items-center">
           <small className="text-muted">Logged in as {user.username}</small>
@@ -149,6 +149,7 @@ export default function ItemList() {
           <a href="/login" className="btn btn-sm btn-primary">Login</a>
         </div>
       )}
+        */}
 
       {/* Item List */}
       <div className="row">
@@ -161,6 +162,14 @@ export default function ItemList() {
                   className="card-img-top p-3"
                   alt={item.id}
                 />
+                <button
+                  disabled={favBusy}
+                  onClick={() => toggleFavorite(item)}
+                  className={`btn fav-btn ${isFav(item.id) ? 'btn-warning' : 'btn-outline-light'}`}
+                  title={isFav(item.id) ? 'Remove from favorites' : 'Add to favorites'}
+                >
+                  {isFav(item.id) ? '★' : '☆'}
+                </button>
               </div>
               <div className="card-body">
                 <h5 className="card-title">{item.name}</h5>
@@ -200,14 +209,7 @@ export default function ItemList() {
                   <strong>NPC Sell price:</strong> {item.npc_sell_price}:- 
                   <br />
                 </p>
-                <button
-                  disabled={favBusy}
-                  onClick={() => toggleFavorite(item)}
-                  className={`btn ${isFav(item.id) ? 'btn-danger' : 'btn-outline-primary'} w-100`}
-                  title={isFav(item.id) ? 'Remove from favorites' : 'Add to favorites'}
-                >
-                  {isFav(item.id) ? '★ Unfavorite' : '☆ Favorite'}
-                </button>
+                
               </div>
             </div>
           </div>
