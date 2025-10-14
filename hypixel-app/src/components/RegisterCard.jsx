@@ -60,7 +60,7 @@ export default function RegisterCard() {
                             required
                         />
                         <label className="form-check-label" htmlFor="tos">
-                            I agree to the <a href="/terms" target="_blank" rel="noopener noreferrer" className="linkFade">Terms of Service</a>
+                            I agree to the <a href="/tos" className="linkFade">Terms of Service</a>
                         </label>
                     </div>
                     <button disabled={loading} type="submit" className="btn btn-primary w-100 buttonFade">{loading ? 'Registering...' : 'Register'}</button>
