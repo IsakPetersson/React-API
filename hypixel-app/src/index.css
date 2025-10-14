@@ -67,15 +67,19 @@ body {
 
 .cardtop {
   background: linear-gradient(90deg, magenta, purple);
-  position: relative; /* Needed for absolute positioning of child */
+  position: relative;
+}
+
+.card:hover {
+  transform: scale(1.01);
 }
 
 .fav-btn {
   position: absolute;
   bottom: 10px;
   left: 10px;
-  width: 40px;
-  height: 40px;
+  width: 2vw;
+  height: 2vw;
   border-radius: 8px;
   font-size: 1.5em;
   line-height: 1;
@@ -89,17 +93,23 @@ body {
   box-shadow: 0 4px 10px rgba(0,0,0,0.3);
 }
 
+.fav-btn.favorited {
+  color: red;
+  background-color: rgba(255, 255, 255, 0.8);
+  border-color: rgba(255, 255, 255, 0.8);
+}
+
 .rarity-display {
   position: absolute;
   bottom: 10px;
   right: 10px;
-  background-color: rgba(0, 0, 0, 0.5);
   
   border-radius: 5px;
   padding: 2px 8px;
-  font-size: 0.8em;
+  font-size: 0.9em;
   font-weight: bold;
   text-transform: uppercase;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.2);
 }
 
 .rarity-text {
@@ -258,5 +268,9 @@ button:focus-visible {
     font-size: 1.2em;
     bottom: 5px;
     left: 5px;
+  }
+
+  .rarity-display {
+    font-size: 0.7em;
   }
 }

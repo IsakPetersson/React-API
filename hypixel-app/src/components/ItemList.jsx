@@ -12,7 +12,22 @@ export default function ItemList() {
     fetch("https://api.hypixel.net/v2/resources/skyblock/items")
       .then((res) => res.json())
       .then((data) => {
-        setItems(data.items); // API returns { success: true, items: [...] }
+        // Fisher-Yates shuffle to randomize the items array
+        const shuffledItems = data.items;
+        let currentIndex = shuffledItems.length, randomIndex;
+
+        // While there remain elements to shuffle.
+        while (currentIndex !== 0) {
+          // Pick a remaining element.
+          randomIndex = Math.floor(Math.random() * currentIndex);
+          currentIndex--;
+
+          // And swap it with the current element.
+          [shuffledItems[currentIndex], shuffledItems[randomIndex]] = [
+            shuffledItems[randomIndex], shuffledItems[currentIndex]];
+        }
+
+        setItems(shuffledItems); // API returns { success: true, items: [...] }
       })
       .catch((err) => {
         console.error("Error fetching items:", err);
@@ -178,14 +193,18 @@ export default function ItemList() {
                   src={`./images/${item.material}.png`}
                   className="card-img-top p-3"
                   alt={item.id}
+                  onError={(e) => {
+                    e.target.onerror = null; // prevent infinite loop if placeholder is also missing
+                    e.target.src = './images/placeholder.png';
+                  }}
                 />
                 <button
                   disabled={favBusy}
                   onClick={() => toggleFavorite(item)}
-                  className={`btn fav-btn ${isFav(item.id) ? 'btn-warning' : 'btn-outline-light'}`}
+                  className={`btn fav-btn ${isFav(item.id) ? 'favorited' : 'btn-outline-light'}`}
                   title={isFav(item.id) ? 'Remove from favorites' : 'Add to favorites'}
                 >
-                  {isFav(item.id) ? '★' : '☆'}
+                  {isFav(item.id) ? '♥' : '♡'}
                 </button>
                 <div className="rarity-display" style={getRarityBoxStyle(item.tier)}>
                   <span className="rarity-text">
