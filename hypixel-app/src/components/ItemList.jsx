@@ -157,6 +157,40 @@ export default function ItemList() {
     return { backgroundColor };
   };
 
+ // Helper function to get the correct image source for an item
+const getItemImageSrc = (item) => {
+  // Check if it's a skull and has a skin property with a value
+  if (item.material === 'SKULL_ITEM' && item.skin?.value) {
+    try {
+      // 1. Decode the Base64 value
+      const decodedValue = atob(item.skin.value);
+      const textureData = JSON.parse(decodedValue);
+
+      // 2. Extract the texture URL (The most reliable data)
+      const textureUrl = textureData.textures?.SKIN?.url;
+      
+      if (typeof textureUrl === 'string') {
+        // 3. Extract the texture hash (the part after the last '/')
+        const textureHash = textureUrl.substring(textureUrl.lastIndexOf('/') + 1);
+        
+        // 4. Use a service that accepts the TEXTURE HASH (not a UUID)
+        return `https://mc-heads.net/head/${textureHash}`;
+      }
+      if (textureData.profileId) {
+        return `https://crafatar.com/renders/head/${textureData.profileId}?overlay`;
+      }
+      
+      // If no valid URL or profileId, fall back to the default skull
+      return './images/SKULL_ITEM.png';
+    } catch (e) {
+      console.error("Failed to process skin for item:", item.id, e);
+      return './images/SKULL_ITEM.png';
+    }
+  }
+  // Default behavior for non-skull items
+  return `./images/${item.material}.png`;
+};
+
   return (
     <div className="itemsList">
       {/* Search Input */}
@@ -190,7 +224,7 @@ export default function ItemList() {
             <div className="card h-100 border-0">
               <div className="cardtop" style={getRarityStyle(item.tier)}>
                 <img
-                  src={`./images/${item.material}.png`}
+                  src={getItemImageSrc(item)}
                   className="card-img-top p-3"
                   alt={item.id}
                   onError={(e) => {
