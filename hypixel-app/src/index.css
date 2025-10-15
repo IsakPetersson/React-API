@@ -54,7 +54,7 @@ body {
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  min-height: 100vh;
+  min-height: 70vh;
   padding: 4rem 2rem;
   background: linear-gradient(135deg, rgba(139, 92, 246, 0.05) 0%, rgba(236, 72, 153, 0.05) 100%);
   position: relative;
@@ -102,46 +102,6 @@ body {
   line-height: 1.8;
 }
 
-.browseItems-btn {
-  background: linear-gradient(135deg, rgba(139, 92, 246, 0.15) 0%, rgba(236, 72, 153, 0.15) 100%);
-  border: 2px solid var(--border-color);
-  color: var(--text-primary);
-  padding: 1rem 2.5rem;
-  font-size: 1.1rem;
-  font-weight: 600;
-  border-radius: 12px;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  box-shadow: 0 4px 15px rgba(139, 92, 246, 0.2);
-  position: relative;
-  overflow: hidden;
-}
-
-.browseItems-btn::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: -100%;
-  width: 100%;
-  height: 100%;
-  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
-  transition: left 0.5s ease;
-}
-
-.browseItems-btn:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 8px 25px rgba(139, 92, 246, 0.4);
-  border-color: var(--primary-purple);
-  background: linear-gradient(135deg, rgba(139, 92, 246, 0.25) 0%, rgba(236, 72, 153, 0.25) 100%);
-}
-
-.browseItems-btn:hover::before {
-  left: 100%;
-}
-
-.browseItems-btn:active {
-  transform: translateY(0);
-}
 /* End Hero Section */
 
 .mainTitle {
@@ -170,8 +130,27 @@ body {
   animation: rotate-gradient 4s linear infinite;
 }
 
+.itemsListTitle {
+  font-size: 3.5rem;
+  line-height: 1.2;
+  font-weight: 800;
+  background: linear-gradient(135deg, var(--primary-purple) 0%, var(--primary-magenta) 100%);
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  margin-bottom: 2rem;
+  letter-spacing: -0.02em;
+  text-align: center;
+}
+
+/* Card Styles */
 .card {
-  opacity: 0.95;
+  background: var(--card-bg);
+  border: 1px solid var(--border-color);
+  border-radius: 16px;
+  overflow: hidden;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
 }
 
 .card li {
@@ -184,8 +163,19 @@ body {
 }
 
 .card:hover {
-  transform: scale(1.01);
+  transform: translateY(-8px);
+  box-shadow: 0 12px 40px rgba(139, 92, 246, 0.3);
+  border-color: var(--primary-purple);
 }
+
+.card-body {
+  background: var(--card-bg);
+  color: var(--text-primary) !important;
+  padding: 1.5rem;
+}
+
+
+/* End Card Styles */
 
 .fav-btn {
   position: absolute;
@@ -231,10 +221,6 @@ body {
   color: white !important;
 }
 
-.card-body {
-  background-color: #444444;
-  color: white !important;
-}
 
 button {
   border-radius: 8px;
@@ -273,28 +259,33 @@ button:focus-visible {
   width: 100%;
 }
 
+/* Styles for the search bar */
 .searchItems {
-  background: linear-gradient(to right, magenta, #E732AA, #d86cfc, magenta);
-  border-radius: 15px;
-  padding: 3px;
-  min-width: 200px;
-  /* Make the background much larger than the element */
-  background-size: 300% 100%;
-  /* Add a smooth transition for when focus is lost */
-  transition: background-position 0.5s ease-out;
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(20px);
+  border-radius: 12px;
+  border: 1px solid var(--border-color);
+  padding: 2px;
+  width: 300px;
+  transition: all 0.3s ease;
 }
 
-/* Apply the animation when the input inside is focused */
 .searchItems:focus-within {
-  animation: rotate-gradient 4s linear infinite;
+  border-color: var(--primary-purple);
+  box-shadow: 0 4px 20px rgba(139, 92, 246, 0.2);
 }
 
-/* Style the input field itself */
 .searchItems input.form-control {
-  border-radius: 13px;
-  /* Slightly smaller radius to fit inside the wrapper */
+  border-radius: 10px;
   border: none;
-  /* Remove the default input border */
+  background: transparent;
+  color: var(--text-primary);
+  padding: 0.875rem 1.25rem;
+  font-size: 1rem;
+}
+
+.searchItems input.form-control::placeholder {
+  color: var(--text-secondary);
 }
 
 /* Styles for the Filter dropdown */
@@ -303,19 +294,65 @@ button:focus-visible {
   display: inline-block;
 }
 
+.filter-container .btn-secondary {
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(20px);
+  border: 1px solid var(--border-color);
+  color: var(--text-primary);
+  padding: 0.875rem 1.5rem;
+  border-radius: 12px;
+  font-weight: 600;
+  transition: all 0.3s ease;
+}
+
+.filter-container .btn-secondary:hover {
+  background: rgba(139, 92, 246, 0.1);
+  border-color: var(--primary-purple);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 20px rgba(139, 92, 246, 0.2);
+}
+
 .filter-dropdown {
   position: absolute;
-  top: 100%;
+  top: calc(100% + 10px);
   left: 0;
-  background-color: #3a3a3a;
-  color: #ffffff !important;
-  border: 1px solid #555;
-  border-radius: 8px;
-  padding: 1rem;
-  margin-top: 5px;
+  background: var(--card-bg);
+  backdrop-filter: blur(20px);
+  border: 1px solid var(--border-color);
+  border-radius: 16px;
+  padding: 1.5rem;
   z-index: 1000;
-  width: 250px;
-  box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+  width: 280px;
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.3);
+}
+
+.filter-dropdown .form-label {
+  color: var(--text-primary);
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+  font-size: 0.9rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.filter-dropdown .form-select {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid var(--border-color);
+  color: var(--text-primary);
+  border-radius: 10px;
+  padding: 0.75rem;
+  transition: all 0.3s ease;
+}
+
+.filter-dropdown .form-select:focus {
+  border-color: var(--primary-purple);
+  box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.1);
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.filter-dropdown .form-select option {
+  background: var(--card-bg);
+  color: var(--text-primary);
 }
 
 /* Styles for the vertical navbar */
@@ -331,7 +368,7 @@ button:focus-visible {
   position: fixed;
   top: 0;
   left: 0;
-  width: 150px;
+  width: 250px;
   z-index: 1000;
   box-shadow: 4px 0 24px rgba(0, 0, 0, 0.2);
 }
@@ -452,6 +489,10 @@ button:focus-visible {
 
   .mainTitle {
     font-size: 3.5em;
+  }
+
+  .searchItems {
+    min-width: 200px;
   }
 }
 
