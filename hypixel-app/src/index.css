@@ -184,6 +184,27 @@ button:focus-visible {
   /* Remove the default input border */
 }
 
+/* Styles for the Filter dropdown */
+.filter-container {
+  position: relative;
+  display: inline-block;
+}
+
+.filter-dropdown {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  background-color: #3a3a3a;
+  color: #ffffff !important;
+  border: 1px solid #555;
+  border-radius: 8px;
+  padding: 1rem;
+  margin-top: 5px;
+  z-index: 1000;
+  width: 250px;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+}
+
 /* Styles for the vertical navbar */
 .navbar-vertical {
   background-color: #222;
