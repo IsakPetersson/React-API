@@ -176,12 +176,39 @@ button:focus-visible {
   animation: rotate-gradient 4s linear infinite;
 }
 
-/* Style the input field itself */
-.searchItems input.form-control {
-  border-radius: 13px;
-  /* Slightly smaller radius to fit inside the wrapper */
-  border: none;
-  /* Remove the default input border */
+/* Styles for the vertical navbar */
+.navbar-vertical {
+  background-color: #222;
+  color: #fff;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  height: 100vh;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 150px;
+}
+
+.navbar-vertical h2 {
+  margin: 0 0 20px 0;
+}
+
+.navbar-vertical ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  width: 100%;
+}
+
+.navbar-vertical li {
+  margin-bottom: 15px;
+}
+
+.navbar-vertical a {
+  color: #fff;
+  text-decoration: none;
 }
 
 .buttonFade {
@@ -220,6 +247,19 @@ button:focus-visible {
   :root {
     color: #213547;
     background-color: #ffffff;
+  }
+
+  body {
+    background-color: #ffffff !important;
+  }
+
+  nav {
+    background-color: #f9f9f9 !important;
+    color: #213547 !important;
+  }
+
+  nav ul {
+    color: #213547 !important;
   }
 
   a:hover {

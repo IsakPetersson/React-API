@@ -157,6 +157,7 @@ export default function ItemList() {
     return { backgroundColor };
   };
 
+
  // Helper function to get the correct image source for an item
 const getItemImageSrc = (item) => {
   // Check if it's a skull and has a skin property with a value
@@ -190,6 +191,7 @@ const getItemImageSrc = (item) => {
   // Default behavior for non-skull items
   return `./images/${item.material}.png`;
 };
+
 
   return (
     <div className="itemsList">
