@@ -15,6 +15,18 @@ export default function NavBar() {
       });
   }, []);
 
+  // Gradient style for text
+  const gradientTextStyle = {
+    background:
+      "linear-gradient(135deg, var(--primary-purple) 0%, var(--primary-magenta) 100%)",
+    WebkitBackgroundClip: "text",
+    WebkitTextFillColor: "transparent",
+    backgroundClip: "text",
+    color: "transparent",
+    fontWeight: "bold",
+    textAlign: "center",
+  };
+
   return (
     <nav className="navbar-vertical">
       <h2>Hypixel Tracker</h2>
@@ -36,10 +48,7 @@ export default function NavBar() {
         >
           {mayor ? (
             <>
-              <div style={{ textAlign: "center" }}>
-                Mayor: {mayor.name}
-              </div>
-
+              <div style={gradientTextStyle}>Mayor: {mayor.name}</div>
               <ul
                 style={{
                   listStyleType: "dotted",
@@ -53,7 +62,10 @@ export default function NavBar() {
                   display: "block",
                 }}
               >
-                <Election />
+                {/* Election timer with gradient */}
+                <li style={gradientTextStyle}>
+                  <Election />
+                </li>
                 {mayor.perks.map((perk, idx) => (
                   <li key={idx} style={{ margin: "2px 0", textAlign: "center" }}>
                     {perk.name}
