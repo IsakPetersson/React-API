@@ -1,8 +1,12 @@
 import { useEffect, useMemo, useState } from "react";
+import Filter from "./Filter";
 
 export default function ItemList() {
   const [items, setItems] = useState([]);
   const [searchTerm, setSearchTerm] = useState(""); // State for search input
+  const [rarityFilter, setRarityFilter] = useState(""); // State for rarity filter
+  const [categoryFilter, setCategoryFilter] = useState(""); // State for category filter
+  const [typeFilter, setTypeFilter] = useState(""); // State for type filter
   const [user, setUser] = useState(null);
   const [favorites, setFavorites] = useState(new Set());
   const [favBusy, setFavBusy] = useState(false);
@@ -55,10 +59,39 @@ export default function ItemList() {
     }
   }, []);
 
-  // Search bar filtering
-  const filteredItems = items.filter((item) =>
-    item.name.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  
+  // Memoize filter options to prevent recalculation on every render
+  const rarities = useMemo(() => {
+    const rarityOrder = [
+      'COMMON',
+      'UNCOMMON',
+      'RARE',
+      'EPIC',
+      'LEGENDARY',
+      'MYTHIC',
+      'DIVINE',
+      'SPECIAL',
+      'VERY_SPECIAL',
+      'UNOBTAINABLE',
+      'SUPREME'
+    ];
+    const uniqueRarities = [...new Set(items.map(item => item.tier).filter(Boolean))];
+    return uniqueRarities.sort((a, b) => rarityOrder.indexOf(a) - rarityOrder.indexOf(b));
+  }, [items]);
+  const categories = useMemo(() => [...new Set(items.map(item => item.category).filter(Boolean))].sort(), [items]);
+  const types = useMemo(() => [...new Set(items.map(item => item.material).filter(Boolean))].sort(), [items]);
+
+  // Search and filter logic
+  const filteredItems = useMemo(() => {
+    return items.filter((item) => {
+      const nameMatch = item.name.toLowerCase().includes(searchTerm.toLowerCase());
+      const rarityMatch = !rarityFilter || item.tier === rarityFilter;
+      const categoryMatch = !categoryFilter || item.category === categoryFilter;
+      const typeMatch = !typeFilter || item.material === typeFilter;
+      return nameMatch && rarityMatch && categoryMatch && typeMatch;
+    });
+  }, [items, searchTerm, rarityFilter, categoryFilter, typeFilter]);
+
 
   const isFav = useMemo(() => (id) => favorites.has(id), [favorites]);
 
@@ -195,14 +228,30 @@ const getItemImageSrc = (item) => {
 
   return (
     <div className="itemsList">
-      {/* Search Input */}
-      <div className="searchItems mb-4 w-25 mx-auto">
-        <input
-          type="text"
-          placeholder="Search items..."
-          className="form-control"
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
+      {/* Search and Filter Controls */}
+      <div className="d-flex justify-content-center mb-4">
+        {/* Search Input */}
+        <div className="searchItems w-25 me-2">
+          <input
+            type="text"
+            placeholder="Search items..."
+            className="form-control"
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+          />
+        </div>
+
+        {/* Filter Component */}
+        <Filter
+          rarityFilter={rarityFilter}
+          setRarityFilter={setRarityFilter}
+          rarities={rarities}
+          categoryFilter={categoryFilter}
+          setCategoryFilter={setCategoryFilter}
+          categories={categories}
+          typeFilter={typeFilter}
+          setTypeFilter={setTypeFilter}
+          types={types}
         />
       </div>
 
