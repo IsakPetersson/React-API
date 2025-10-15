@@ -25,7 +25,7 @@ export default function Filter({
   return (
     <div className="filter-container">
       <button className="btn btn-secondary" onClick={() => setIsOpen(!isOpen)}>
-        Filter
+      <i class="fa-solid fa-filter"></i> Filter
       </button>
       {isOpen && (
         <div className="filter-dropdown">
