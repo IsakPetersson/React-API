@@ -51,12 +51,11 @@ export default function NavBar() {
               <div style={gradientTextStyle}>Mayor: {mayor.name}</div>
               <ul
                 style={{
-                  listStyleType: "dotted",
                   paddingLeft: "0",
                   margin: "8px auto 0 auto",
                   fontWeight: "normal",
                   fontSize: "0.8em",
-                  color: "#fff",
+                  color: "var(--text-secondary)",
                   width: "90%",
                   textAlign: "center",
                   display: "block",
