@@ -102,46 +102,6 @@ body {
   line-height: 1.8;
 }
 
-.browseItems-btn {
-  background: linear-gradient(135deg, rgba(139, 92, 246, 0.15) 0%, rgba(236, 72, 153, 0.15) 100%);
-  border: 2px solid var(--border-color);
-  color: var(--text-primary);
-  padding: 1rem 2.5rem;
-  font-size: 1.1rem;
-  font-weight: 600;
-  border-radius: 12px;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  box-shadow: 0 4px 15px rgba(139, 92, 246, 0.2);
-  position: relative;
-  overflow: hidden;
-}
-
-.browseItems-btn::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: -100%;
-  width: 100%;
-  height: 100%;
-  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
-  transition: left 0.5s ease;
-}
-
-.browseItems-btn:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 8px 25px rgba(139, 92, 246, 0.4);
-  border-color: var(--primary-purple);
-  background: linear-gradient(135deg, rgba(139, 92, 246, 0.25) 0%, rgba(236, 72, 153, 0.25) 100%);
-}
-
-.browseItems-btn:hover::before {
-  left: 100%;
-}
-
-.browseItems-btn:active {
-  transform: translateY(0);
-}
 /* End Hero Section */
 
 .mainTitle {
