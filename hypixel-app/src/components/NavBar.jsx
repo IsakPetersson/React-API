@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
 import React, { useEffect, useState } from "react";
+import Election from "./Election"; // Import the timer component
 
 export default function NavBar() {
   const [mayor, setMayor] = useState(null);
@@ -35,7 +36,10 @@ export default function NavBar() {
         >
           {mayor ? (
             <>
-              Mayor: {mayor.name}
+              <div style={{ textAlign: "center" }}>
+                Mayor: {mayor.name}
+              </div>
+
               <ul
                 style={{
                   listStyleType: "dotted",
@@ -49,6 +53,7 @@ export default function NavBar() {
                   display: "block",
                 }}
               >
+                <Election />
                 {mayor.perks.map((perk, idx) => (
                   <li key={idx} style={{ margin: "2px 0", textAlign: "center" }}>
                     {perk.name}
