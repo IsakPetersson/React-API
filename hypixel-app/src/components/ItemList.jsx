@@ -228,6 +228,7 @@ const getItemImageSrc = (item) => {
 
   return (
     <div className="itemsList">
+      <h1 className="itemsListTitle">Browse All Items</h1>
       {/* Search and Filter Controls */}
       <div className="d-flex justify-content-center mb-4">
         {/* Search Input */}
