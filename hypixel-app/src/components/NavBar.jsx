@@ -27,6 +27,55 @@ export default function NavBar() {
     textAlign: "center",
   };
 
+  // Tooltip styles
+  const tooltipStyle = {
+    position: "absolute",
+    left: "50%",
+    transform: "translateX(-50%)",
+    bottom: "120%",
+    background: "#222",
+    color: "#fff",
+    padding: "8px 12px",
+    borderRadius: "6px",
+    fontSize: "0.85em",
+    whiteSpace: "pre-line",
+    zIndex: 100,
+    boxShadow: "0 2px 8px rgba(0,0,0,0.2)",
+    pointerEvents: "none",
+  };
+
+  // Perk item with hover tooltip
+  function PerkItem({ perk }) {
+    const [show, setShow] = useState(false);
+
+    // Remove all § followed by any character
+    const cleanDescription = perk.description.replace(/§./g, "");
+
+    return (
+      <li
+        style={{
+          margin: "2px 0",
+          textAlign: "center",
+          position: "relative",
+          cursor: "pointer",
+          display: "inline-block",
+          width: "100%",
+        }}
+        onMouseEnter={() => setShow(true)}
+        onMouseLeave={() => setShow(false)}
+      >
+        {perk.name}
+        {show && (
+          <div style={tooltipStyle}>
+            <strong>{perk.name}</strong>
+            <br />
+            {cleanDescription}
+          </div>
+        )}
+      </li>
+    );
+  }
+
   return (
     <nav className="navbar-vertical">
       <h2>Hypixel Tracker</h2>
@@ -66,9 +115,7 @@ export default function NavBar() {
                   <Election />
                 </li>
                 {mayor.perks.map((perk, idx) => (
-                  <li key={idx} style={{ margin: "2px 0", textAlign: "center" }}>
-                    {perk.name}
-                  </li>
+                  <PerkItem key={idx} perk={perk} />
                 ))}
               </ul>
             </>
