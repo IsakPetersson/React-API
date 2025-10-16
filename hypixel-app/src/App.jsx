@@ -7,6 +7,22 @@ import Register from "./pages/Register";
 import Tos from "./pages/Tos";
 
 function App() {
+  useEffect(() => {
+    // Create floating bubbles
+    const bubbleCount = 1000;
+    for (let i = 0; i < bubbleCount; i++) {
+      const bubble = document.createElement('div');
+      bubble.className = 'bubble';
+      document.body.appendChild(bubble);
+    }
+
+    // Cleanup function to remove bubbles when component unmounts
+    return () => {
+      const bubbles = document.querySelectorAll('.bubble');
+      bubbles.forEach(bubble => bubble.remove());
+    };
+  }, []);
+
   return (
     <div style={{ marginLeft: "200px" }}>
       <NavBar />
