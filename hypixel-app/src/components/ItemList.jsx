@@ -10,6 +10,7 @@ export default function ItemList() {
   const [user, setUser] = useState(null);
   const [favorites, setFavorites] = useState(new Set());
   const [favBusy, setFavBusy] = useState(false);
+  const [itemsToShow, setItemsToShow] = useState(100); // Start with 100 items
 
   // Fetch items fron Hypixel API
   useEffect(() => {
@@ -94,6 +95,11 @@ export default function ItemList() {
 
 
   const isFav = useMemo(() => (id) => favorites.has(id), [favorites]);
+
+  // Function to load more items
+  const loadMoreItems = () => {
+    setItemsToShow(prev => prev + 100); // Load 100 more items each time
+  };
 
   async function toggleFavorite(item) {
     if (!user?.id) {
@@ -271,7 +277,7 @@ const getItemImageSrc = (item) => {
 
       {/* Item List */}
       <div className="row">
-        {filteredItems.slice(0, 200).map((item, index) => (
+        {filteredItems.slice(0, itemsToShow).map((item, index) => (
           <div key={index} className="col-md-4 col-lg-3 mb-4">
             <div className="card h-100 border-0">
               <div className="cardtop" style={getRarityStyle(item.tier)}>
@@ -336,6 +342,15 @@ const getItemImageSrc = (item) => {
           </div>
         ))}
       </div>
+
+      {/* Show More Button */}
+      {itemsToShow < filteredItems.length && (
+        <div className="text-center mt-4 mb-5">
+          <button onClick={loadMoreItems} className="btn btn-primary show-more-btn">
+            Show More Items ({filteredItems.length - itemsToShow} remaining)
+          </button>
+        </div>
+      )}
     </div>
   );
 }
