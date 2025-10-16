@@ -89,7 +89,7 @@ body {
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   letter-spacing: -0.02em;
-  line-height: 1.1;
+  line-height: 1.3;
 }
 
 .hero-section h2 {
@@ -162,32 +162,57 @@ body {
   padding: 1.5rem;
 }
 
-
 /* End Card Styles */
 
 .fav-btn {
   position: absolute;
-  bottom: 10px;
-  left: 10px;
-  width: 2vw;
-  height: 2vw;
-  border-radius: 8px;
-  font-size: 1.5em;
+  bottom: 12px;
+  left: 12px;
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  font-size: 1.4rem;
   line-height: 1;
   padding: 0;
-  box-shadow: 0 2px 5px rgba(0,0,0,0.2);
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  background: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(10px);
+  border: 2px solid rgba(255, 255, 255, 0.2);
+  color: rgba(255, 255, 255, 0.9);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
 }
 
-.fav-btn:hover {
-  transform: scale(1.1);
-  box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+.fav-btn:hover:not(:disabled) {
+  transform: scale(1.15) translateY(-2px);
+  box-shadow: 0 8px 20px rgba(139, 92, 246, 0.4);
+  border-color: var(--primary-purple);
+  background: rgba(139, 92, 246, 0.2);
+}
+
+.fav-btn:active:not(:disabled) {
+  transform: scale(1.05);
+}
+
+.fav-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
 }
 
 .fav-btn.favorited {
-  color: red;
-  background-color: rgba(255, 255, 255, 0.8);
-  border-color: rgba(255, 255, 255, 0.8);
+  color: #ff4757;
+  background: rgba(255, 255, 255, 0.95);
+  border-color: #ff4757;
+  box-shadow: 0 4px 16px rgba(255, 71, 87, 0.4);
+}
+
+.fav-btn.favorited:hover:not(:disabled) {
+  background: rgba(255, 255, 255, 1);
+  box-shadow: 0 8px 24px rgba(255, 71, 87, 0.6);
+  transform: scale(1.2) translateY(-2px);
 }
 
 .rarity-display {
@@ -397,6 +422,8 @@ button:focus-visible {
   background: rgba(139, 92, 246, 0.1);
   transform: translateX(5px);
 }
+/* Navbar end */
+
 
 .buttonFade {
   background: linear-gradient(to right, #d86cfc, #E732AA, #d86cfc);
@@ -467,8 +494,25 @@ button:focus-visible {
   .navbar-brand {
     font-size: 1.2em;
   }
-}
 
+  .navbar-vertical {
+    width: 140px;
+  }
+
+  .fav-btn {
+    width: 32px;
+    height: 32px;
+    font-size: 1.1rem;
+    bottom: 6px;
+    left: 6px;
+    border-radius: 8px;
+  }
+
+  .rarity-display {
+    font-size: 0.6rem;
+    padding: 0.25rem 0.5rem;
+  }
+}
 
 @media (max-width: 600px) {
   .center-container {
@@ -494,14 +538,34 @@ button:focus-visible {
   }
 
   .fav-btn {
-    width: 30px;
-    height: 30px;
-    font-size: 1.2em;
-    bottom: 5px;
-    left: 5px;
+    width: 40px;
+    height: 40px;
+    font-size: 1.3rem;
+    bottom: 10px;
+    left: 10px;
   }
 
   .rarity-display {
     font-size: 0.7em;
+  }
+
+  .hero-section h2 {
+    font-size: 1.1rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .fav-btn {
+    width: 36px;
+    height: 36px;
+    font-size: 1.2rem;
+    bottom: 8px;
+    left: 8px;
+    border-radius: 10px;
+  }
+
+  .rarity-display {
+    font-size: 0.65rem;
+    padding: 0.3rem 0.6rem;
   }
 }
