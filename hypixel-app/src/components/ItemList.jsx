@@ -7,6 +7,7 @@ export default function ItemList() {
   const [rarityFilter, setRarityFilter] = useState(""); // State for rarity filter
   const [categoryFilter, setCategoryFilter] = useState(""); // State for category filter
   const [typeFilter, setTypeFilter] = useState(""); // State for type filter
+  const [showFavoritesOnly, setShowFavoritesOnly] = useState(false); // New state for favorites filter
   const [user, setUser] = useState(null);
   const [favorites, setFavorites] = useState(new Set());
   const [favBusy, setFavBusy] = useState(false);
@@ -89,9 +90,10 @@ export default function ItemList() {
       const rarityMatch = !rarityFilter || item.tier === rarityFilter;
       const categoryMatch = !categoryFilter || item.category === categoryFilter;
       const typeMatch = !typeFilter || item.material === typeFilter;
-      return nameMatch && rarityMatch && categoryMatch && typeMatch;
+      const favoriteMatch = !showFavoritesOnly || favorites.has(item.id); // Add favorites filter
+      return nameMatch && rarityMatch && categoryMatch && typeMatch && favoriteMatch;
     });
-  }, [items, searchTerm, rarityFilter, categoryFilter, typeFilter]);
+  }, [items, searchTerm, rarityFilter, categoryFilter, typeFilter, showFavoritesOnly, favorites]);
 
 
   const isFav = useMemo(() => (id) => favorites.has(id), [favorites]);
@@ -259,6 +261,9 @@ const getItemImageSrc = (item) => {
           typeFilter={typeFilter}
           setTypeFilter={setTypeFilter}
           types={types}
+          showFavoritesOnly={showFavoritesOnly}
+          setShowFavoritesOnly={setShowFavoritesOnly}
+          user={user}
         />
       </div>
 

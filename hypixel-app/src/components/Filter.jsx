@@ -10,6 +10,9 @@ export default function Filter({
   typeFilter,
   setTypeFilter,
   types,
+  showFavoritesOnly,
+  setShowFavoritesOnly,
+  user, // Add user prop to check if logged in
 }) {
   const [isOpen, setIsOpen] = useState(false);
 
@@ -25,10 +28,28 @@ export default function Filter({
   return (
     <div className="filter-container">
       <button className="btn btn-secondary" onClick={() => setIsOpen(!isOpen)}>
-      <i class="fa-solid fa-filter"></i> Filter
+        <i className="fa-solid fa-filter"></i> Filter
       </button>
       {isOpen && (
         <div className="filter-dropdown">
+          {/* Show Favorites Only - Only visible when logged in */}
+          {user && (
+            <div className="mb-3">
+              <div className="form-check">
+                <input
+                  className="form-check-input"
+                  type="checkbox"
+                  id="favoritesOnlyCheck"
+                  checked={showFavoritesOnly}
+                  onChange={(e) => setShowFavoritesOnly(e.target.checked)}
+                />
+                <label className="form-check-label" htmlFor="favoritesOnlyCheck">
+                  Show Favorites Only
+                </label>
+              </div>
+            </div>
+          )}
+
           <div className="mb-3">
             <label className="form-label">Rarity</label>
             <select className="form-select" value={rarityFilter} onChange={e => setRarityFilter(e.target.value)} aria-label="Filter by Rarity">
