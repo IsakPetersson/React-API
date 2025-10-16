@@ -1,10 +1,11 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import NavBar from "./components/NavBar";
 import { Routes, Route } from "react-router-dom";
 import Items from "./pages/Items";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 import Tos from "./pages/Tos";
+import "./bubbles.css"; // Import bubble styles
 
 function App() {
   useEffect(() => {
@@ -24,13 +25,13 @@ function App() {
   }, []);
 
   return (
-    <div style={{ marginLeft: "200px" }}>
+    <div style={{ marginLeft: "200px", position: "relative", zIndex: 1 }}>
       <NavBar />
       <Routes>
-        <Route path="/" element={<Items />} /> {/* Home page */}
-        <Route path="/login" element={<Login />} /> {/* Login page */}
-        <Route path="/register" element={<Register />} /> {/* Register page */}
-        <Route path="/tos" element={<Tos />} /> {/* Terms of Service page */}
+        <Route path="/" element={<Items />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/register" element={<Register />} />
+        <Route path="/tos" element={<Tos />} />
       </Routes>
     </div>
   );
