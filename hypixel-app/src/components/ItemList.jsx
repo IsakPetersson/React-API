@@ -3,6 +3,7 @@ import Filter from "./Filter";
 
 export default function ItemList() {
   const [items, setItems] = useState([]);
+  const [minecraftItems, setMinecraftItems] = useState(new Map()); // Store Minecraft API items
   const [searchTerm, setSearchTerm] = useState(""); // State for search input
   const [rarityFilter, setRarityFilter] = useState(""); // State for rarity filter
   const [categoryFilter, setCategoryFilter] = useState(""); // State for category filter
@@ -13,7 +14,26 @@ export default function ItemList() {
   const [favBusy, setFavBusy] = useState(false);
   const [itemsToShow, setItemsToShow] = useState(100); // Start with 100 items
 
-  // Fetch items fron Hypixel API
+  // Fetch Minecraft items from the minecraft-api
+  useEffect(() => {
+    fetch("https://minecraft-api.vercel.app/api/items")
+      .then((res) => res.json())
+      .then((data) => {
+        // Create a Map for quick lookup by namespacedId
+        const itemMap = new Map();
+        data.forEach(item => {
+          // Convert namespacedId to match Hypixel format (e.g., "acacia_boat" -> "ACACIA_BOAT")
+          const key = item.namespacedId.toUpperCase();
+          itemMap.set(key, item);
+        });
+        setMinecraftItems(itemMap);
+      })
+      .catch((err) => {
+        console.error("Error fetching Minecraft items:", err);
+      });
+  }, []);
+
+  // Fetch items from Hypixel API
   useEffect(() => {
     fetch("https://api.hypixel.net/v2/resources/skyblock/items")
       .then((res) => res.json())
@@ -229,6 +249,13 @@ const getItemImageSrc = (item) => {
       return './images/SKULL_ITEM.png';
     }
   }
+  
+  // Try to find matching item in Minecraft API
+  const materialKey = item.material?.toUpperCase();
+  if (materialKey && minecraftItems.has(materialKey)) {
+    return minecraftItems.get(materialKey).image;
+  }
+  
   // Default behavior for non-skull items
   return `./images/${item.material}.png`;
 };
@@ -290,8 +317,10 @@ const getItemImageSrc = (item) => {
                   src={getItemImageSrc(item)}
                   className="card-img-top p-3"
                   alt={item.id}
+                  style={{ imageRendering: 'pixelated' }} // Make pixelated images look crisp
                   onError={(e) => {
-                    e.target.onerror = null; // prevent infinite loop if placeholder is also missing
+                    e.target.onerror = null; // Prevent infinite loop
+                    // If any image fails to load, go straight to placeholder
                     e.target.src = './images/placeholder.png';
                   }}
                 />

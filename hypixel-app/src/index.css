@@ -148,6 +148,20 @@ body {
 .cardtop {
   background: linear-gradient(90deg, magenta, purple);
   position: relative;
+  min-height: 120px; /* Ensure consistent card height */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.card-img-top {
+  image-rendering: pixelated; /* Keep pixels sharp when scaling */
+  image-rendering: -moz-crisp-edges; /* Firefox */
+  image-rendering: crisp-edges; /* Standard */
+  width: 100%;
+  height: auto;
+  object-fit: contain;
+  aspect-ratio: 180 / 191;
 }
 
 .card:hover {
@@ -281,6 +295,7 @@ button:focus-visible {
   padding: 2px;
   width: 300px;
   transition: all 0.3s ease;
+  margin-bottom: 30px;
 }
 
 .searchItems:focus-within {
