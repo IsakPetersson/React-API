@@ -1,9 +1,14 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import React, { useEffect, useState } from "react";
 import Election from "./Election"; // Import the timer component
 
 export default function NavBar() {
   const [mayor, setMayor] = useState(null);
+  const navigate = useNavigate();
+
+  // Directly check localStorage instead of using state
+  const userString = localStorage.getItem('user');
+  const isLoggedIn = !!userString;
 
   useEffect(() => {
     fetch("https://api.hypixel.net/v2/resources/skyblock/election")
@@ -14,6 +19,11 @@ export default function NavBar() {
         }
       });
   }, []);
+
+  const handleLogout = () => {
+    localStorage.removeItem('user');
+    navigate('/login');
+  };
 
   // Gradient style for text
   const gradientTextStyle = {
@@ -84,7 +94,13 @@ export default function NavBar() {
           <Link to="/">Items</Link>
         </li>
         <li>
-          <Link to="/login">Login</Link>
+          {isLoggedIn ? (
+            <a href="#" onClick={(e) => { e.preventDefault(); handleLogout(); }}>
+              Logout
+            </a>
+          ) : (
+            <Link to="/login">Login</Link>
+          )}
         </li>
       </ul>
       <div style={{ marginTop: "auto", width: "100%" }}>

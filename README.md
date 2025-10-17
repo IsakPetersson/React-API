@@ -1,4 +1,4 @@
-# React-API
+# Hypixel Skyblock Tracker
 
 This project is a React-based API application designed to demonstrate how to build and consume APIs using React.
 
