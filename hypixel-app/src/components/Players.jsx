@@ -3,18 +3,43 @@ import { useState } from "react";
 export default function Players({ playerData }) {
   const [inventoryType, setInventoryType] = useState("inv_contents");
 
-  const renderInventory = (inventory) => {
-    if (!inventory) {
-      return (
-        <div className="alert alert-warning">
-          <p>No inventory data available for this type.</p>
-        </div>
-      );
-    }
-    
-    // Check for different inventory data structures
-    if (inventory.data) {
-      // Base64 + Gzipped NBT data
+  // Updated inventory types based on API response
+  const inventoryTypes = [
+    { key: "inv_contents", name: "Main Inventory" },
+    { key: "ender_chest_contents", name: "Ender Chest" },
+    { key: "bag_contents", name: "Bag Contents" },
+    { key: "inv_armor", name: "Armor" },
+    { key: "equipment_contents", name: "Equipment" },
+    { key: "personal_vault_contents", name: "Personal Vault" },
+    { key: "wardrobe_equipped_slot", name: "Wardrobe Equipped Slot" },
+      // Base64 + Gzipped NBT data (fallback: just decode base64 to string, try JSON.parse)
+      let decodedText = '';
+      let parsedJson = null;
+      try {
+        decodedText = atob(inventory.data);
+        try {
+          parsedJson = JSON.parse(decodedText);
+        } catch (e) {
+          parsedJson = null;
+        }
+      } catch (e) {
+        decodedText = 'Failed to decode base64.';
+      }
+        // Decode base64 to Uint8Array
+        const binaryString = atob(inventory.data);
+        const len = binaryString.length;
+        const bytes = new Uint8Array(len);
+        for (let i = 0; i < len; i++) {
+          bytes[i] = binaryString.charCodeAt(i);
+        }
+        // Decompress gzip
+        const decompressed = pako.ungzip(bytes);
+        // Parse NBT
+        nbtJson = nbt.parse(decompressed.buffer).parsed;
+        decodedText = JSON.stringify(nbtJson, null, 2);
+      } catch (e) {
+        decodedText = 'Failed to decode and parse NBT: ' + e.message;
+      }
       return (
         <div>
           <div className="alert alert-success mb-3">
@@ -22,23 +47,13 @@ export default function Players({ playerData }) {
             <p>This inventory contains {inventory.data.length} characters of encoded data.</p>
             <p><strong>Data Type:</strong> {inventory.type || 'Unknown'}</p>
           </div>
-          
-          {/* Show raw data for debugging */}
-          <div className="card">
+          {/* Show decoded NBT as formatted JSON if possible */}
+          <div className="card mb-3">
             <div className="card-header">
-              <h6>Raw Inventory Data (Base64 + Gzipped NBT)</h6>
+              <h6>Decoded Inventory Data (NBT)</h6>
             </div>
             <div className="card-body">
-              <p className="text-muted small">
-                This data is Base64-encoded and gzipped NBT format. To display actual items, 
-                you would need to decode the Base64, decompress the gzip, and parse the NBT structure.
-              </p>
-              <details>
-                <summary className="btn btn-sm btn-outline-secondary">Show Raw Data</summary>
-                <pre className="mt-2 small" style={{maxHeight: '200px', overflow: 'auto', fontSize: '0.7rem'}}>
-                  {inventory.data.substring(0, 500)}...
-                </pre>
-              </details>
+              <pre className="small" style={{maxHeight: '200px', overflow: 'auto', fontSize: '0.7rem'}}>{decodedText.substring(0, 5000)}</pre>
             </div>
           </div>
         </div>
@@ -81,13 +96,30 @@ export default function Players({ playerData }) {
         </div>
       );
     } else {
-      // Show what data structure we have
+      // Attempt to display contents of all fields
       return (
         <div className="alert alert-info">
           <h6>Inventory Data Structure</h6>
           <p>This inventory has a different data structure than expected.</p>
           <p><strong>Available fields:</strong> {Object.keys(inventory).join(', ')}</p>
-          
+          <div className="mt-3">
+            {Object.entries(inventory).map(([key, value]) => (
+              <div key={key} className="mb-3">
+                <h6 className="small">{key}</h6>
+                {Array.isArray(value) ? (
+                  <ul className="small">
+                    {value.map((item, idx) => (
+                      <li key={idx}>{typeof item === 'object' ? JSON.stringify(item) : String(item)}</li>
+                    ))}
+                  </ul>
+                ) : typeof value === 'object' && value !== null ? (
+                  <pre className="small" style={{maxHeight: '150px', overflow: 'auto', fontSize: '0.7rem'}}>{JSON.stringify(value, null, 2)}</pre>
+                ) : (
+                  <span className="small">{String(value)}</span>
+                )}
+              </div>
+            ))}
+          </div>
           <details className="mt-3">
             <summary className="btn btn-sm btn-outline-info">Show Raw Inventory Data</summary>
             <pre className="mt-2 small" style={{maxHeight: '200px', overflow: 'auto', fontSize: '0.7rem'}}>
@@ -104,30 +136,24 @@ export default function Players({ playerData }) {
     const members = profile.members;
     const memberKeys = members ? Object.keys(members) : [];
     
-    const inventoryTypes = [
-      { key: "inv_contents", name: "Main Inventory" },
-      { key: "inv_armor", name: "Armor" },
-      { key: "ender_chest_contents", name: "Ender Chest" },
-      { key: "talisman_bag", name: "Talisman Bag" },
-      { key: "fishing_bag", name: "Fishing Bag" },
-      { key: "quiver", name: "Quiver" },
-      { key: "potion_bag", name: "Potion Bag" },
-      { key: "accessory_bag_storage", name: "Accessory Bag" },
-      { key: "inventory", name: "Inventory" }
-    ];
+    // ...existing code...
 
     // If we have members, show member selection and their inventories
     if (memberKeys.length > 0) {
+      // Get available inventory types for the first member
+      const firstMember = members[memberKeys[0]];
+      const availableTypes = Object.keys(firstMember);
+      // Use available types for selector
       return (
         <div>
           <div className="alert alert-success mb-3">
             <h6>👥 Profile Members Found ({memberKeys.length})</h6>
             <p>Inventory data is stored in profile members. Here's what each member has:</p>
           </div>
-          
           <div className="row">
             {memberKeys.map((memberId, index) => {
               const member = members[memberId];
+              const memberAvailableTypes = Object.keys(member);
               return (
                 <div key={memberId} className="col-md-6 col-lg-4 mb-3">
                   <div className="card">
@@ -137,23 +163,14 @@ export default function Players({ playerData }) {
                     </div>
                     <div className="card-body">
                       <p className="small">Last Save: {member.last_save ? new Date(member.last_save).toLocaleString() : 'Unknown'}</p>
-                      
-                      {/* Show available inventories for this member */}
                       <div className="mt-2">
                         <h6 className="small">Available Inventories:</h6>
                         <div className="d-flex flex-wrap gap-1">
-                          {inventoryTypes.map(type => {
-                            const hasData = member[type.key] && (member[type.key].data || member[type.key].items || Object.keys(member[type.key]).length > 0);
-                            return (
-                              <span key={type.key} className={`badge ${hasData ? 'bg-success' : 'bg-secondary'}`}>
-                                {type.name} {hasData ? '✅' : '❌'}
-                              </span>
-                            );
-                          })}
+                          {memberAvailableTypes.map(typeKey => (
+                            <span key={typeKey} className="badge bg-success">{typeKey}</span>
+                          ))}
                         </div>
                       </div>
-                      
-                      {/* Show inventory selector for this member */}
                       <div className="mt-3">
                         <label className="form-label small">Select inventory for this member:</label>
                         <select 
@@ -161,15 +178,14 @@ export default function Players({ playerData }) {
                           onChange={(e) => {
                             const selectedType = e.target.value;
                             if (selectedType && member[selectedType]) {
-                              // You could add state to track which member's inventory to show
-                              console.log(`Selected ${selectedType} for member ${memberId}:`, member[selectedType]);
+                              setInventoryType(selectedType);
                             }
                           }}
                         >
                           <option value="">Choose inventory type...</option>
-                          {inventoryTypes.map(type => (
-                            <option key={type.key} value={type.key} disabled={!member[type.key]}>
-                              {type.name} {member[type.key] ? '✅' : '❌'}
+                          {memberAvailableTypes.map(typeKey => (
+                            <option key={typeKey} value={typeKey}>
+                              {typeKey}
                             </option>
                           ))}
                         </select>
@@ -180,7 +196,6 @@ export default function Players({ playerData }) {
               );
             })}
           </div>
-          
           {/* Show detailed inventory for the first member */}
           {memberKeys.length > 0 && (
             <div className="mt-4">
@@ -197,18 +212,17 @@ export default function Players({ playerData }) {
                       value={inventoryType}
                       onChange={(e) => setInventoryType(e.target.value)}
                     >
-                      {inventoryTypes.map(type => (
-                        <option key={type.key} value={type.key}>{type.name}</option>
+                      {availableTypes.map(typeKey => (
+                        <option key={typeKey} value={typeKey}>{typeKey}</option>
                       ))}
                     </select>
                   </div>
-
-                  {members[memberKeys[0]][inventoryType] ? (
-                    renderInventory(members[memberKeys[0]][inventoryType])
+                  {firstMember[inventoryType] ? (
+                    renderInventory(firstMember[inventoryType])
                   ) : (
                     <div className="alert alert-warning">
-                      <p>No {inventoryTypes.find(t => t.key === inventoryType)?.name} data available for this member.</p>
-                      <p className="mb-0 small">Available inventory types: {Object.keys(members[memberKeys[0]]).filter(key => key.includes('inv') || key.includes('bag') || key.includes('chest')).join(', ') || 'None'}</p>
+                      <p>No {inventoryType} data available for this member.</p>
+                      <p className="mb-0 small">Available inventory types: {availableTypes.join(', ') || 'None'}</p>
                     </div>
                   )}
                 </div>
