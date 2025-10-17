@@ -1,16 +1,89 @@
-# React + Vite
+# Hypixel Skyblock Tracker
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Welcome to our Hypixel Skyblock Tracker React project. This has been a passionate project for us where we have combined gaming and web development.
 
-Currently, two official plugins are available:
+## What is this site about?
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+This web app lets you browse through **over 5,000 Hypixel Skyblock items**, search for whatever item you need, filter by rarity/category/type, and even save your favorite items if you create an account.
 
-## React Compiler
+## Features
 
-The React Compiler is currently not compatible with SWC. See [this issue](https://github.com/vitejs/vite-plugin-react/issues/428) for tracking the progress.
+- **Massive Item Database**: Every item from the Hypixel Skyblock API, complete with images, stats, and rarity colors
 
-## Expanding the ESLint configuration
+- **Smart Search & Filtering**: Find exactly what you're looking for in seconds
+- **Meaningful Animations**: Purple and magenta gradients, floating bubbles in the background, and smooth hover effects
+- **Favorites System**: Log in to save your favorite items, useful for tracking what you're working towards
+- **Current Mayor Info**: The sidebar shows who's in office and their perks, plus a countdown to the next election
+- **Responsive Design**: Works on desktop, tablet, and mobile
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+## Tech Stack
+
+**Frontend:**
+- React 19 with Vite
+- React Router for navigation
+- Bootstrap 5 for the layout structure
+- Custom CSS for gradients and animations
+
+**Backend:**
+- Node.js + Express API
+- Azure SQL Database
+- bcrypt for password hashing
+- Custom favorites system
+
+**APIs:**
+- **Hypixel API** for all the Skyblock items
+- **Minecraft API** for item images
+- **Various fallbacks** for texture loading
+
+## Getting Started
+
+### Prerequisites
+- Node.js (v14+)
+- npm or yarn
+- An Azure SQL database
+
+### Installation
+
+1. **Clone this repo:**
+   ```bash
+   git clone https://github.com/your-username/React-API.git
+   cd React-API
+   ```
+
+2. **Install frontend dependencies:**
+    ```bash
+    cd hypixel-app
+    npm install
+    ```
+
+3. **Install backend dependencies:**
+    ```bash
+    cd ../server
+    npm install
+    ```
+
+4. **Set up your environment variables:**
+    Copy .env.example to .env
+    Fill in your Azure SQL credentials
+
+    ```bash
+    AZURE_SQL_SERVER=your-server.database.windows.net
+    AZURE_SQL_DATABASE=your-db-name
+    AZURE_SQL_USER=your-username
+    AZURE_SQL_PASSWORD=your-password
+    PORT=3001
+    ```
+
+5. **Start the backend:**
+    ```bash 
+    cd server
+    npm run dev
+    ```
+
+6. **Start the frontend (in a new terminal):**
+    ```bash
+    cd hypixel-app
+    npm run dev 
+    ```
+
+7. **Open your browser: Navigate to http://localhost:5173**
