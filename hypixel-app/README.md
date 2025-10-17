@@ -1,6 +1,6 @@
 # Hypixel Skyblock Tracker
 
-Welcome to our Hypixel Skyblock Tracker React project. This has been a passionate project for us where we have combined gaming and web development.
+Welcome to our Hypixel Skyblock Tracker React project. This has been a fun project for us where we have combined gaming and web development.
 
 ## What is this site about?
 
@@ -87,3 +87,10 @@ This web app lets you browse through **over 5,000 Hypixel Skyblock items**, sear
     ```
 
 7. **Open your browser: Navigate to http://localhost:5173**
+
+## License
+
+MIT License - feel free to use this however you want!
+
+## Made by
+Eliah, Isak, Kevin & Andi
