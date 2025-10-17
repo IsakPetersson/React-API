@@ -1,12 +1,12 @@
 import { Link, useNavigate } from "react-router-dom";
 import React, { useEffect, useState } from "react";
-import Election from "./Election"; // Import the timer component
+import Election from "./Election";
 
 export default function NavBar() {
   const [mayor, setMayor] = useState(null);
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
   const navigate = useNavigate();
 
-  // Directly check localStorage instead of using state
   const userString = localStorage.getItem('user');
   const isLoggedIn = !!userString;
 
@@ -22,10 +22,14 @@ export default function NavBar() {
 
   const handleLogout = () => {
     localStorage.removeItem('user');
+    setIsMenuOpen(false);
     navigate('/login');
   };
 
-  // Gradient style for text
+  const closeMenu = () => {
+    setIsMenuOpen(false);
+  };
+
   const gradientTextStyle = {
     background:
       "linear-gradient(135deg, var(--primary-purple) 0%, var(--primary-magenta) 100%)",
@@ -37,7 +41,6 @@ export default function NavBar() {
     textAlign: "center",
   };
 
-  // Tooltip styles
   const tooltipStyle = {
     position: "absolute",
     left: "50%",
@@ -54,11 +57,8 @@ export default function NavBar() {
     pointerEvents: "none",
   };
 
-  // Perk item with hover tooltip
   function PerkItem({ perk }) {
     const [show, setShow] = useState(false);
-
-    // Remove all § followed by any character
     const cleanDescription = perk.description.replace(/§./g, "");
 
     return (
@@ -87,59 +87,75 @@ export default function NavBar() {
   }
 
   return (
-    <nav className="navbar-vertical">
-      <h2>Hypixel Tracker</h2>
-      <ul>
-        <li>
-          <Link to="/">Items</Link>
-        </li>
-        <li>
-          {isLoggedIn ? (
-            <a href="#" onClick={(e) => { e.preventDefault(); handleLogout(); }}>
-              Logout
-            </a>
-          ) : (
-            <Link to="/login">Login</Link>
-          )}
-        </li>
-      </ul>
-      <div style={{ marginTop: "auto", width: "100%" }}>
-        <div
-          style={{
-            color: "#E732AA",
-            fontWeight: "bold",
-            fontSize: "1em",
-          }}
-        >
-          {mayor ? (
-            <>
-              <div style={gradientTextStyle}>Mayor: {mayor.name}</div>
-              <ul
-                style={{
-                  paddingLeft: "0",
-                  margin: "8px auto 0 auto",
-                  fontWeight: "normal",
-                  fontSize: "0.8em",
-                  color: "var(--text-secondary)",
-                  width: "90%",
-                  textAlign: "center",
-                  display: "block",
-                }}
-              >
-                {/* Election timer with gradient */}
-                <li style={gradientTextStyle}>
-                  <Election />
-                </li>
-                {mayor.perks.map((perk, idx) => (
-                  <PerkItem key={idx} perk={perk} />
-                ))}
-              </ul>
-            </>
-          ) : (
-            "Loading mayor..."
-          )}
+    <>
+      {/* Mobile burger button */}
+      <button 
+        className="burger-menu-btn"
+        onClick={() => setIsMenuOpen(!isMenuOpen)}
+        aria-label="Toggle menu"
+      >
+        <span className={`burger-line ${isMenuOpen ? 'open' : ''}`}></span>
+        <span className={`burger-line ${isMenuOpen ? 'open' : ''}`}></span>
+        <span className={`burger-line ${isMenuOpen ? 'open' : ''}`}></span>
+      </button>
+
+      {/* Overlay */}
+      {isMenuOpen && <div className="menu-overlay" onClick={closeMenu}></div>}
+
+      {/* Navigation */}
+      <nav className={`navbar-vertical ${isMenuOpen ? 'mobile-open' : ''}`}>
+        <h2>Hypixel Tracker</h2>
+        <ul>
+          <li>
+            <Link to="/" onClick={closeMenu}>Items</Link>
+          </li>
+          <li>
+            {isLoggedIn ? (
+              <a href="#" onClick={(e) => { e.preventDefault(); handleLogout(); }}>
+                Logout
+              </a>
+            ) : (
+              <Link to="/login" onClick={closeMenu}>Login</Link>
+            )}
+          </li>
+        </ul>
+        <div style={{ marginTop: "auto", width: "100%" }}>
+          <div
+            style={{
+              color: "#E732AA",
+              fontWeight: "bold",
+              fontSize: "1em",
+            }}
+          >
+            {mayor ? (
+              <>
+                <div style={gradientTextStyle}>Mayor: {mayor.name}</div>
+                <ul
+                  style={{
+                    paddingLeft: "0",
+                    margin: "8px auto 0 auto",
+                    fontWeight: "normal",
+                    fontSize: "0.8em",
+                    color: "var(--text-secondary)",
+                    width: "90%",
+                    textAlign: "center",
+                    display: "block",
+                  }}
+                >
+                  <li style={gradientTextStyle}>
+                    <Election />
+                  </li>
+                  {mayor.perks.map((perk, idx) => (
+                    <PerkItem key={idx} perk={perk} />
+                  ))}
+                </ul>
+              </>
+            ) : (
+              "Loading mayor..."
+            )}
+          </div>
         </div>
-      </div>
-    </nav>
+      </nav>
+    </>
   );
 }

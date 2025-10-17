@@ -70,7 +70,7 @@ body {
   right: 0;
   bottom: 0;
   background: radial-gradient(circle at 30% 50%, rgba(139, 92, 246, 0.1) 0%, transparent 50%),
-              radial-gradient(circle at 70% 50%, rgba(236, 72, 153, 0.1) 0%, transparent 50%);
+    radial-gradient(circle at 70% 50%, rgba(236, 72, 153, 0.1) 0%, transparent 50%);
   pointer-events: none;
 }
 
@@ -104,7 +104,8 @@ body {
 
 /* End Hero Section */
 
-.mainTitle, .altTitle {
+.mainTitle,
+.altTitle {
   font-size: 3.5rem;
   line-height: 1.2;
   font-weight: 800;
@@ -148,16 +149,20 @@ body {
 .cardtop {
   background: linear-gradient(90deg, magenta, purple);
   position: relative;
-  min-height: 120px; /* Ensure consistent card height */
+  min-height: 120px;
+  /* Ensure consistent card height */
   display: flex;
   align-items: center;
   justify-content: center;
 }
 
 .card-img-top {
-  image-rendering: pixelated; /* Keep pixels sharp when scaling */
-  image-rendering: -moz-crisp-edges; /* Firefox */
-  image-rendering: crisp-edges; /* Standard */
+  image-rendering: pixelated;
+  /* Keep pixels sharp when scaling */
+  image-rendering: -moz-crisp-edges;
+  /* Firefox */
+  image-rendering: crisp-edges;
+  /* Standard */
   width: 100%;
   height: auto;
   object-fit: contain;
@@ -233,13 +238,13 @@ body {
   position: absolute;
   bottom: 10px;
   right: 10px;
-  
+
   border-radius: 5px;
   padding: 2px 8px;
   font-size: 0.9em;
   font-weight: bold;
   text-transform: uppercase;
-  box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
 }
 
 .rarity-text {
@@ -483,6 +488,7 @@ button:focus-visible {
   background: rgba(139, 92, 246, 0.1);
   transform: translateX(5px);
 }
+
 /* Navbar end */
 
 
@@ -638,6 +644,8 @@ button:focus-visible {
 }
 
 @media (max-width: 768px) {
+
+
   .fav-btn {
     width: 36px;
     height: 36px;
@@ -650,5 +658,97 @@ button:focus-visible {
   .rarity-display {
     font-size: 0.65rem;
     padding: 0.3rem 0.6rem;
+  }
+}
+
+/* Burger Menu Button */
+.burger-menu-btn {
+  display: none;
+  position: fixed;
+  top: 1rem;
+  left: 1rem;
+  z-index: 1002;
+  background: var(--card-bg);
+  border: 1px solid var(--border-color);
+  padding: 0.5rem;
+  width: 50px;
+  height: 50px;
+  border-radius: 12px;
+  cursor: pointer;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 5px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+  transition: all 0.3s ease;
+}
+
+.burger-menu-btn:hover {
+  background: rgba(139, 92, 246, 0.1);
+  border-color: var(--primary-purple);
+  box-shadow: 0 4px 20px rgba(139, 92, 246, 0.3);
+}
+
+.burger-line {
+  width: 25px;
+  height: 3px;
+  background: linear-gradient(135deg, var(--primary-purple), var(--primary-magenta));
+  border-radius: 2px;
+  transition: all 0.3s ease;
+}
+
+.burger-line.open:nth-child(1) {
+  transform: rotate(45deg) translate(7px, 7px);
+}
+
+.burger-line.open:nth-child(2) {
+  opacity: 0;
+}
+
+.burger-line.open:nth-child(3) {
+  transform: rotate(-45deg) translate(7px, -7px);
+}
+
+/* Menu Overlay */
+.menu-overlay {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.6);
+  z-index: 999;
+}
+
+/* Mobile Responsive */
+@media (max-width: 768px) {
+
+
+  .burger-menu-btn {
+    display: flex;
+  }
+
+  .menu-overlay {
+    display: block;
+  }
+
+  .navbar-vertical {
+    transform: translateX(-100%);
+    transition: transform 0.3s ease;
+    width: 280px;
+    z-index: 1001;
+    padding-top: 100px;
+    padding-bottom: 100px;
+    height: 100%;
+  }
+
+  .navbar-vertical.mobile-open {
+    transform: translateX(0);
+  }
+
+  /* Add padding to body when sidebar is visible */
+  body {
+    transition: margin-left 0.3s ease;
   }
 }
