@@ -6,8 +6,11 @@
   /* Color palette */
   --primary-purple: #8b5cf6;
   --primary-magenta: #ec4899;
+  --primary-pink: #e732aa;
   --dark-bg: #0f0f1e;
   --darker-bg: #0a0a14;
+  --light-bg: #fcfcfc;
+  --lighter-bg: #f1f1f1;
   --card-bg: #1a1a2e;
   --card-hover: #252541;
   --text-primary: #ffffff;
@@ -554,6 +557,16 @@ button:focus-visible {
 
   body {
     background-color: #ffffff !important;
+    background: linear-gradient(135deg, var(--lighter-bg) 0%, var(--light-bg) 50%, #cccccd 100%);
+  }
+
+  .hero-section {
+    background: linear-gradient(135deg, rgba(239, 35, 205, 0.05) 0%, rgba(236, 72, 153, 0.05) 100%);
+  }
+
+  .card-body {
+    background-color: #f9f9f9 !important;
+    color: #213547 !important;
   }
 
   nav {
