@@ -569,6 +569,10 @@ button:focus-visible {
     color: #213547 !important;
   }
 
+  .card:hover {
+    box-shadow: 0 12px 40px rgba(246, 92, 233, 0.3);
+  }
+
   nav {
     background-color: #f9f9f9 !important;
     color: #213547 !important;
@@ -585,6 +589,55 @@ button:focus-visible {
   button {
     background-color: #f9f9f9;
   }
+
+  .filter-container .btn-secondary {
+    background: rgba(0, 0, 0, 0.05);
+    color: #213547;
+    border-color: rgba(0, 0, 0, 0.1);
+  }
+
+  .filter-container .btn-secondary:hover {
+    background: rgba(139, 92, 246, 0.1);
+    color: #213547;
+  }
+
+  .filter-dropdown {
+    background: #f9f9f9;
+    border-color: rgba(0, 0, 0, 0.1);
+  }
+
+  .filter-dropdown .form-label {
+    color: #213547;
+  }
+
+  .filter-dropdown .form-select {
+    background: rgba(0, 0, 0, 0.05);
+    color: #213547;
+    border-color: rgba(0, 0, 0, 0.1);
+  }
+
+  .filter-dropdown .form-select option {
+    background: #f9f9f9;
+    color: #213547;
+  }
+
+  .filter-dropdown .form-check-label {
+    color: #213547;
+  }
+
+  .navbar-vertical a {
+    color: #213547;
+  }
+
+  .navbar-vertical a:hover {
+    color: #000000;
+    background: rgba(139, 92, 246, 0.1);
+  }
+
+  .searchItems input.form-control {
+    color: #213547;
+  }
+  
 }
 
 @media (max-width: 500px) {
