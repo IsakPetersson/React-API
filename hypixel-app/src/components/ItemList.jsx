@@ -265,9 +265,9 @@ const getItemImageSrc = (item) => {
     <div className="itemsList">
       <h1 className="itemsListTitle mt-5">Browse All Items</h1>
       {/* Search and Filter Controls */}
-      <div className="d-flex justify-content-center mb-4">
+      <div className="d-flex flex-column flex-md-row justify-content-center align-items-center gap-3 mb-4">
         {/* Search Input */}
-        <div className="searchItems w-25 me-2">
+        <div className="searchItems">
           <input
             type="text"
             placeholder="Search items..."
@@ -308,9 +308,9 @@ const getItemImageSrc = (item) => {
         */}
 
       {/* Item List */}
-      <div className="row">
+      <div className="row g-3">
         {filteredItems.slice(0, itemsToShow).map((item, index) => (
-          <div key={index} className="col-md-4 col-lg-3 mb-4">
+          <div key={index} className="col-12 col-sm-6 col-md-4 col-lg-4 col-xl-3">
             <div className="card h-100 border-0">
               <div className="cardtop" style={getRarityStyle(item.tier)}>
                 <img

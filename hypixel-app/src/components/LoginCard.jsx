@@ -33,7 +33,7 @@ export default function LoginCard() {
         }
     }
     return (
-        <div className="card mx-auto mt-5" style={{ maxWidth: "60%", minWidth: "40%", backgroundColor: "#222" }}>
+        <div className="card mx-auto mt-5" style={{ maxWidth: "90%", minWidth: "280px", width: "100%", backgroundColor: "#222" }}>
             <div className="card-body" style={{ backgroundColor: "#222" }}>
                 <form
                     onSubmit={e => {

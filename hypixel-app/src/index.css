@@ -57,12 +57,14 @@ body {
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  min-height: 70vh;
+  min-height: 60vh;
   padding: 4rem 2rem;
   background: linear-gradient(135deg, rgba(139, 92, 246, 0.05) 0%, rgba(236, 72, 153, 0.05) 100%);
   position: relative;
   overflow: hidden;
-  width: 91vw;
+  width: calc(100% + 4rem);
+  margin: -2rem -2rem 0 -2rem;
+  border-radius: 0;
 }
 
 .hero-section::before {
@@ -84,7 +86,7 @@ body {
 }
 
 .hero-section h1 {
-  font-size: 5rem;
+  font-size: clamp(2.5rem, 5vw, 5rem);
   font-weight: 800;
   margin-bottom: 1.5rem;
   background: linear-gradient(135deg, var(--primary-purple) 0%, var(--primary-magenta) 100%);
@@ -93,23 +95,26 @@ body {
   -webkit-text-fill-color: transparent;
   letter-spacing: -0.02em;
   line-height: 1.3;
+  text-align: center;
 }
 
 .hero-section h2 {
-  font-size: 1.25rem;
-  margin-bottom: 3rem;
+  font-size: clamp(1rem, 2vw, 1.25rem);
+  margin-bottom: 2rem;
   color: var(--text-secondary);
   max-width: 600px;
   margin-left: auto;
   margin-right: auto;
   line-height: 1.8;
+  text-align: center;
+  padding: 0 1rem;
 }
 
 /* End Hero Section */
 
 .mainTitle,
 .altTitle {
-  font-size: 3.5rem;
+  font-size: clamp(2rem, 4vw, 3.5rem);
   line-height: 1.2;
   font-weight: 800;
   background: linear-gradient(to right, #d86cfc, #E732AA, #d86cfc);
@@ -120,10 +125,11 @@ body {
   animation: rotate-gradient 4s linear infinite;
   margin-bottom: 2rem;
   letter-spacing: -0.02em;
+  text-align: center;
 }
 
 .itemsListTitle {
-  font-size: 3.5rem;
+  font-size: clamp(2rem, 4vw, 3.5rem);
   line-height: 1.2;
   font-weight: 800;
   background: linear-gradient(135deg, var(--primary-purple) 0%, var(--primary-magenta) 100%);
@@ -143,6 +149,9 @@ body {
   overflow: hidden;
   transition: all 0.3s ease;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+  height: 100%;
+  display: flex;
+  flex-direction: column;
 }
 
 .card li {
@@ -152,24 +161,22 @@ body {
 .cardtop {
   background: linear-gradient(90deg, magenta, purple);
   position: relative;
-  min-height: 120px;
-  /* Ensure consistent card height */
+  min-height: 160px;
   display: flex;
   align-items: center;
   justify-content: center;
+  flex-shrink: 0;
 }
 
 .card-img-top {
   image-rendering: pixelated;
-  /* Keep pixels sharp when scaling */
   image-rendering: -moz-crisp-edges;
-  /* Firefox */
   image-rendering: crisp-edges;
-  /* Standard */
   width: 100%;
   height: auto;
   object-fit: contain;
   aspect-ratio: 180 / 191;
+  
 }
 
 .card:hover {
@@ -181,7 +188,22 @@ body {
 .card-body {
   background: var(--card-bg);
   color: var(--text-primary) !important;
-  padding: 1.5rem;
+  padding: 2rem;
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.card-title {
+  font-size: clamp(0.9rem, 2vw, 1.1rem);
+  margin-bottom: 0.75rem;
+  line-height: 1.3;
+}
+
+.card-text {
+  font-size: clamp(0.75rem, 1.5vw, 0.9rem);
+  line-height: 1.4;
+  flex-grow: 1;
 }
 
 /* End Card Styles */
@@ -281,13 +303,12 @@ button:focus-visible {
 .center-container {
   display: flex;
   flex-direction: column;
-  /* Stack items vertically */
   justify-content: center;
-  /* Center items vertically */
   align-items: center;
-  /* Center items horizontally */
   margin: auto;
-  width: 120vh;
+  width: 100%;
+  max-width: 1200px;
+  padding: 0 1rem;
 }
 
 .itemsList {
@@ -301,7 +322,9 @@ button:focus-visible {
   border-radius: 12px;
   border: 1px solid var(--border-color);
   padding: 2px;
-  width: 300px;
+  width: 100%;
+  max-width: 300px;
+  min-width: 200px;
   transition: all 0.3s ease;
   margin-bottom: 30px;
 }
@@ -437,6 +460,20 @@ button:focus-visible {
   font-weight: 500;
 }
 
+/* App Layout */
+.app-container {
+  display: flex;
+  min-height: 100vh;
+  position: relative;
+}
+
+.main-content {
+  flex: 1;
+  margin-left: 230px;
+  padding: 2rem;
+  transition: margin-left 0.3s ease;
+}
+
 /* Styles for the vertical navbar */
 .navbar-vertical {
   background: var(--card-bg);
@@ -453,6 +490,7 @@ button:focus-visible {
   width: 230px;
   z-index: 1000;
   box-shadow: 4px 0 24px rgba(0, 0, 0, 0.2);
+  transition: transform 0.3s ease;
 }
 
 .navbar-vertical h2 {
@@ -640,18 +678,122 @@ button:focus-visible {
   
 }
 
-@media (max-width: 500px) {
-
-  .card-body {
-    font-size: 0.8em;
+/* Tablet Responsive */
+@media (max-width: 1024px) and (min-width: 769px) {
+  .main-content {
+    margin-left: 0;
+    padding: 1.5rem;
   }
 
-  .navbar-brand {
-    font-size: 1.2em;
+  .hero-section {
+    width: calc(100% + 3rem);
+    margin: -1.5rem -1.5rem 0 -1.5rem;
   }
 
   .navbar-vertical {
-    width: 140px;
+    transform: translateX(-100%);
+    width: 250px;
+  }
+
+  .burger-menu-btn {
+    display: flex;
+  }
+
+  .menu-overlay {
+    display: block;
+  }
+
+  .navbar-vertical.mobile-open {
+    transform: translateX(0);
+  }
+}
+
+/* Responsive Utilities */
+.container-fluid {
+  padding-left: 1rem;
+  padding-right: 1rem;
+}
+
+@media (min-width: 576px) {
+  .container-fluid {
+    padding-left: 1.5rem;
+    padding-right: 1.5rem;
+  }
+}
+
+@media (min-width: 768px) {
+  .container-fluid {
+    padding-left: 2rem;
+    padding-right: 2rem;
+  }
+}
+
+@media (min-width: 1200px) {
+  .container-fluid {
+    padding-left: 3rem;
+    padding-right: 3rem;
+  }
+}
+
+/* Improved spacing for different screen sizes */
+@media (max-width: 576px) {
+  .main-content {
+    padding: 0.75rem;
+  }
+  
+  .hero-section {
+    width: calc(100% + 1.5rem);
+    margin: -0.75rem -0.75rem 0 -0.75rem;
+    padding: 1rem 0.75rem;
+  }
+}
+
+@media (min-width: 1200px) {
+  .main-content {
+    padding: 3rem;
+  }
+  
+  .hero-section {
+    width: calc(100% + 6rem);
+    margin: -3rem -3rem 0 -3rem;
+    padding: 3rem 2rem;
+  }
+}
+
+/* Small Mobile Responsive */
+@media (max-width: 500px) {
+  .main-content {
+    padding: 0.5rem;
+  }
+
+  .hero-section {
+    width: calc(100% + 1rem);
+    margin: -0.5rem -0.5rem 0 -0.5rem;
+    min-height: 40vh;
+    padding: 1.5rem 0.75rem;
+  }
+
+  .center-container {
+    padding: 0 0.25rem;
+    max-width: 100%;
+  }
+
+  .card-body {
+    font-size: 0.8em;
+    padding: 1.25rem;
+  }
+
+  .cardtop {
+    min-height: 120px;
+  }
+
+  .card-img-top {
+    max-height: 120px;
+  }
+
+  .navbar-vertical {
+    width: 100%;
+    max-width: 280px;
   }
 
   .fav-btn {
@@ -669,29 +811,8 @@ button:focus-visible {
   }
 }
 
-@media (max-width: 600px) {
-  .center-container {
-    width: 60%;
-  }
-
-  .mainTitle {
-    font-size: 3.5em;
-  }
-
-  .searchItems {
-    min-width: 200px;
-  }
-}
-
+/* Large Desktop Responsive */
 @media (max-width: 1200px) {
-  .center-container {
-    width: 90%;
-  }
-
-  .mainTitle {
-    font-size: 3.5em;
-  }
-
   .fav-btn {
     width: 40px;
     height: 40px;
@@ -702,28 +823,6 @@ button:focus-visible {
 
   .rarity-display {
     font-size: 0.7em;
-  }
-
-  .hero-section h2 {
-    font-size: 1.1rem;
-  }
-}
-
-@media (max-width: 768px) {
-
-
-  .fav-btn {
-    width: 36px;
-    height: 36px;
-    font-size: 1.2rem;
-    bottom: 8px;
-    left: 8px;
-    border-radius: 10px;
-  }
-
-  .rarity-display {
-    font-size: 0.65rem;
-    padding: 0.3rem 0.6rem;
   }
 }
 
@@ -789,7 +888,17 @@ button:focus-visible {
 
 /* Mobile Responsive */
 @media (max-width: 768px) {
+  .main-content {
+    margin-left: 0;
+    padding: 1rem;
+  }
 
+  .hero-section {
+    width: calc(100% + 2rem);
+    margin: -1rem -1rem 0 -1rem;
+    min-height: 50vh;
+    padding: 2rem 1rem;
+  }
 
   .burger-menu-btn {
     display: flex;
@@ -813,8 +922,35 @@ button:focus-visible {
     transform: translateX(0);
   }
 
-  /* Add padding to body when sidebar is visible */
-  body {
-    transition: margin-left 0.3s ease;
+  .center-container {
+    padding: 0 0.5rem;
+    max-width: 100%;
+  }
+
+  .searchItems {
+    max-width: 100%;
+    margin-bottom: 20px;
+  }
+
+  .filter-container {
+    width: 100%;
+    max-width: 300px;
+  }
+
+  .filter-dropdown {
+    width: 100%;
+    max-width: 300px;
+  }
+
+  .card-body {
+    padding: 1.5rem;
+  }
+
+  .cardtop {
+    min-height: 140px;
+  }
+
+  .card-img-top {
+    max-height: 140px;
   }
 }

@@ -25,14 +25,16 @@ function App() {
   }, []);
 
   return (
-    <div style={{ marginLeft: "200px", position: "relative", zIndex: 1 }}>
+    <div className="app-container">
       <NavBar />
-      <Routes>
-        <Route path="/" element={<Items />} />
-        <Route path="/login" element={<Login />} />
-        <Route path="/register" element={<Register />} />
-        <Route path="/tos" element={<Tos />} />
-      </Routes>
+      <main className="main-content">
+        <Routes>
+          <Route path="/" element={<Items />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/register" element={<Register />} />
+          <Route path="/tos" element={<Tos />} />
+        </Routes>
+      </main>
     </div>
   );
 }
