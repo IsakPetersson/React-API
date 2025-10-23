@@ -26,7 +26,7 @@ function App() {
   }, []);
 
   return (
-    <div style={{ marginLeft: "200px", position: "relative", zIndex: 1 }}>
+    <div className="app-container">
       <NavBar />
       <Routes>
         <Route path="/" element={<Items />} />

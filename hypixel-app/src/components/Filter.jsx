@@ -26,7 +26,7 @@ export default function Filter({
   };
 
   return (
-    <div className="filter-container">
+    <div className="filter-container mb-4">
       <button className="btn btn-secondary" onClick={() => setIsOpen(!isOpen)}>
         <i className="fa-solid fa-filter"></i> Filter
       </button>
