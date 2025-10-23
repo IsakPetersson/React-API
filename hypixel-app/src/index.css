@@ -57,13 +57,14 @@ body {
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  min-height: 60vh;
-  padding: 4rem 2rem;
+  min-height: 60vh; /* Increased from 40vh to 60vh */
+  padding: 6rem 2rem; /* Increased from 4rem to 6rem */
   background: linear-gradient(135deg, rgba(139, 92, 246, 0.05) 0%, rgba(236, 72, 153, 0.05) 100%);
   position: relative;
   overflow: hidden;
-  width: calc(100% + 4rem);
-  margin: -2rem -2rem 0 -2rem;
+  width: 100%;
+  margin-bottom: 3rem;
+  text-align: center;
   border-radius: 0;
 }
 
@@ -129,7 +130,7 @@ body {
 }
 
 .itemsListTitle {
-  font-size: clamp(2rem, 4vw, 3.5rem);
+  font-size: 3.5rem;
   line-height: 1.2;
   font-weight: 800;
   background: linear-gradient(135deg, var(--primary-purple) 0%, var(--primary-magenta) 100%);
@@ -139,6 +140,8 @@ body {
   margin-bottom: 2rem;
   letter-spacing: -0.02em;
   text-align: center;
+  position: relative;
+  width: 100%;
 }
 
 /* Card Styles */
@@ -313,6 +316,18 @@ button:focus-visible {
 
 .itemsList {
   width: 100%;
+  max-width: 100%;
+  position: relative;
+  padding: 2rem 0;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column; /* Force vertical stacking */
+}
+
+.items-page {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
 }
 
 /* Styles for the search bar */
@@ -397,7 +412,7 @@ button:focus-visible {
 .filter-dropdown .form-select {
   background: rgba(255, 255, 255, 0.05);
   border: 1px solid var(--border-color);
-  color: var(--text-primary);
+  color: var (--text-primary);
   border-radius: 10px;
   padding: 0.75rem;
   transition: all 0.3s ease;
@@ -471,7 +486,10 @@ button:focus-visible {
   flex: 1;
   margin-left: 230px;
   padding: 2rem;
-  transition: margin-left 0.3s ease;
+  width: calc(100% - 230px);
+  box-sizing: border-box;
+  position: relative;
+  z-index: 1;
 }
 
 /* Styles for the vertical navbar */
@@ -751,7 +769,8 @@ button:focus-visible {
   .hero-section {
     width: calc(100% + 1.5rem);
     margin: -0.75rem -0.75rem 0 -0.75rem;
-    padding: 1rem 0.75rem;
+    padding: 2rem 0.75rem; /* Adjusted for mobile */
+    min-height: 50vh;
   }
 }
 
@@ -763,7 +782,8 @@ button:focus-visible {
   .hero-section {
     width: calc(100% + 6rem);
     margin: -3rem -3rem 0 -3rem;
-    padding: 3rem 2rem;
+    padding: 6rem 2rem; /* Maintain desktop padding */
+    min-height: 60vh;
   }
 }
 
@@ -776,8 +796,8 @@ button:focus-visible {
   .hero-section {
     width: calc(100% + 1rem);
     margin: -0.5rem -0.5rem 0 -0.5rem;
-    min-height: 40vh;
-    padding: 1.5rem 0.75rem;
+    min-height: 45vh; /* Slightly smaller for very small screens */
+    padding: 2rem 0.75rem;
   }
 
   .center-container {
@@ -904,8 +924,8 @@ button:focus-visible {
   .hero-section {
     width: calc(100% + 2rem);
     margin: -1rem -1rem 0 -1rem;
-    min-height: 50vh;
-    padding: 2rem 1rem;
+    min-height: 55vh; /* Adjusted for tablet */
+    padding: 3rem 1rem;
   }
 
   .navbar-vertical {

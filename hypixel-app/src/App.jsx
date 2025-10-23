@@ -28,13 +28,15 @@ function App() {
   return (
     <div className="app-container">
       <NavBar />
-      <Routes>
-        <Route path="/" element={<Items />} />
-        <Route path="/login" element={<Login />} />
-        <Route path="/profiles" element={<Profiles />} />
-        <Route path="/register" element={<Register />} />
-        <Route path="/tos" element={<Tos />} />
-      </Routes>
+      <div className="main-content">
+        <Routes>
+          <Route path="/" element={<Items />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/profiles" element={<Profiles />} />
+          <Route path="/register" element={<Register />} />
+          <Route path="/tos" element={<Tos />} />
+        </Routes>
+      </div>
     </div>
   );
 }
