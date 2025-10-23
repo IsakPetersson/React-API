@@ -3,15 +3,20 @@ import cors from 'cors';
 import dotenv from 'dotenv';
 import sql from 'mssql';
 import bcrypt from 'bcryptjs';
+import cookieParser from 'cookie-parser';
+import jwt from 'jsonwebtoken';
 
 dotenv.config();
 
 const app = express();
 app.use(express.json());
+app.use(cookieParser());
 
-// CORS: allow local dev frontend by default or use env
-const corsOrigins = process.env.CORS_ORIGIN?.split(',').map(s => s.trim()).filter(Boolean) || ['http://localhost:5173'];
-app.use(cors({ origin: corsOrigins, credentials: false }));
+// Dev CORS (ok to remove if serving frontend+API from same App Service origin)
+app.use(cors({
+  origin: process.env.CORS_ORIGIN?.split(',') || ['http://localhost:5173'],
+  credentials: true
+}));
 
 // Azure SQL config
 const sqlConfig = {
@@ -101,6 +106,26 @@ app.get('/health', (req, res) => {
 	res.json({ ok: true, time: new Date().toISOString() });
 });
 
+const JWT_SECRET = process.env.JWT_SECRET || 'dev-secret-change-me';
+
+function signToken(user) {
+  return jwt.sign({ id: user.Id, username: user.Username }, JWT_SECRET, { expiresIn: '7d' });
+}
+
+function requireAuth(req, res, next) {
+  const header = req.headers.authorization;
+  const bearer = header && header.startsWith('Bearer ') ? header.split(' ')[1] : null;
+  const token = req.cookies?.auth || bearer;
+  if (!token) return res.status(401).json({ error: 'unauthorized' });
+  try {
+    const payload = jwt.verify(token, JWT_SECRET);
+    req.user = payload;
+    next();
+  } catch {
+    return res.status(401).json({ error: 'invalid_token' });
+  }
+}
+
 // Register: { username, email, password }
 app.post('/api/register', async (req, res) => {
 	const { username, email, password } = req.body || {};
@@ -143,69 +168,76 @@ app.post('/api/login', async (req, res) => {
 		const ok = await bcrypt.compare(password, user.PasswordHash);
 		if (!ok) return res.status(401).json({ error: 'invalid credentials' });
 		// For simplicity, return a basic success. In production, return a JWT.
-		return res.json({ message: 'ok', user: { id: user.Id, username: user.Username } });
+		const token = signToken({ Id: user.Id, Username: user.Username });
+		res.cookie('auth', token, {
+			httpOnly: true,
+			secure: process.env.NODE_ENV === 'production',
+			sameSite: 'lax',
+			path: '/',
+			maxAge: 7 * 24 * 60 * 60 * 1000
+		});
+		res.json({ message: 'ok', user: { id: user.Id, username: user.Username } });
 	} catch (err) {
 		console.error('Login error:', err);
 		return res.status(500).json({ error: 'server error' });
 	}
 });
 
+// Add logout route
+app.post('/api/logout', requireAuth, (req, res) => {
+  res.clearCookie('auth', { path: '/' });
+  res.json({ message: 'logged_out' });
+});
+
 // List favorites for a user: GET /api/favorites?userId=123
-app.get('/api/favorites', async (req, res) => {
-	const userId = parseInt(req.query.userId, 10);
-	if (!userId) return res.status(400).json({ error: 'userId is required' });
+app.get('/api/favorites', requireAuth, async (req, res) => {
 	try {
 		await poolConnect;
 		const result = await pool.request()
-			.input('userId', sql.Int, userId)
-			.query('SELECT ItemId, ItemName, CreatedAt FROM dbo.Favorites WHERE UserId = @userId ORDER BY CreatedAt DESC');
-		return res.json(result.recordset);
+			.input('uid', sql.Int, req.user.id)
+			.query('SELECT ItemId, ItemName, CreatedAt FROM dbo.Favorites WHERE UserId=@uid ORDER BY CreatedAt DESC');
+		res.json(result.recordset);
 	} catch (err) {
-		console.error('Favorites list error:', err);
-		return res.status(500).json({ error: 'server error' });
+		console.error(err);
+		res.status(500).json({ error: 'Failed to load favorites' });
 	}
 });
 
-// Add a favorite: POST /api/favorites { userId, itemId, itemName? }
-app.post('/api/favorites', async (req, res) => {
-	const { userId, itemId, itemName } = req.body || {};
-	if (!userId || !itemId) return res.status(400).json({ error: 'userId and itemId are required' });
-	try {
-		await poolConnect;
-		// Ensure user exists
-		const u = await pool.request().input('uid', sql.Int, userId).query('SELECT 1 FROM dbo.Users WHERE Id = @uid');
-		if (u.recordset.length === 0) return res.status(404).json({ error: 'user not found' });
-
-		// Upsert-like insert ignoring duplicates
-		await pool.request()
-			.input('uid', sql.Int, userId)
-			.input('iid', sql.NVarChar(100), itemId)
-			.input('iname', sql.NVarChar(255), itemName || null)
-			.query(`IF NOT EXISTS (SELECT 1 FROM dbo.Favorites WHERE UserId = @uid AND ItemId = @iid)
-							INSERT INTO dbo.Favorites (UserId, ItemId, ItemName) VALUES (@uid, @iid, @iname);`);
-		return res.status(201).json({ message: 'favorited' });
-	} catch (err) {
-		console.error('Favorites add error:', err);
-		return res.status(500).json({ error: 'server error' });
-	}
+app.post('/api/favorites', requireAuth, async (req, res) => {
+  const { itemId, itemName } = req.body || {};
+  if (!itemId) return res.status(400).json({ error: 'itemId required' });
+  try {
+    await poolConnect;
+    await pool.request()
+      .input('uid', sql.Int, req.user.id)
+      .input('iid', sql.NVarChar(100), itemId)
+      .input('name', sql.NVarChar(255), itemName || null)
+      .query(`
+        IF NOT EXISTS (SELECT 1 FROM dbo.Favorites WHERE UserId=@uid AND ItemId=@iid)
+          INSERT INTO dbo.Favorites (UserId, ItemId, ItemName) VALUES (@uid, @iid, @name);
+        SELECT ItemId, ItemName FROM dbo.Favorites WHERE UserId=@uid AND ItemId=@iid;
+      `);
+    res.status(201).json({ ok: true });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Failed to add favorite' });
+  }
 });
 
-// Remove a favorite: DELETE /api/favorites { userId, itemId }
-app.delete('/api/favorites', async (req, res) => {
-	const { userId, itemId } = req.body || {};
-	if (!userId || !itemId) return res.status(400).json({ error: 'userId and itemId are required' });
-	try {
-		await poolConnect;
-		const r = await pool.request()
-			.input('uid', sql.Int, userId)
-			.input('iid', sql.NVarChar(100), itemId)
-			.query('DELETE FROM dbo.Favorites WHERE UserId = @uid AND ItemId = @iid');
-		if (r.rowsAffected?.[0] === 0) return res.status(404).json({ error: 'favorite not found' });
-		return res.json({ message: 'unfavorited' });
-	} catch (err) {
-		console.error('Favorites delete error:', err);
-		return res.status(500).json({ error: 'server error' });
-	}
+app.delete('/api/favorites', requireAuth, async (req, res) => {
+  const { itemId } = req.body || {};
+  if (!itemId) return res.status(400).json({ error: 'itemId required' });
+  try {
+    await poolConnect;
+    await pool.request()
+      .input('uid', sql.Int, req.user.id)
+      .input('iid', sql.NVarChar(100), itemId)
+      .query('DELETE FROM dbo.Favorites WHERE UserId=@uid AND ItemId=@iid;');
+    res.json({ ok: true });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Failed to remove favorite' });
+  }
 });
 
 const port = process.env.PORT || 3001;

@@ -60,18 +60,18 @@ export default function ItemList() {
       });
   }, []);
 
-  // Load user from localStorage and fetch their favorites
+  // Load user from localStorage and fetch their favorites (server derives user from cookie)
   useEffect(() => {
     try {
       const uStr = localStorage.getItem('user');
       if (uStr) {
         const u = JSON.parse(uStr);
         setUser(u);
-        // Fetch favorites from our API
-        fetch(`/api/favorites?userId=${u.id}`)
-          .then(r => r.json())
+        // Fetch favorites from our API (cookie-authenticated)
+        fetch(`/api/favorites`, { credentials: 'include' })
+          .then(r => r.ok ? r.json() : [])
           .then(list => {
-            const s = new Set(list.map(f => f.ItemId || f.itemId));
+            const s = new Set((list || []).map(f => f.ItemId || f.itemId));
             setFavorites(s);
           })
           .catch(err => console.error('Failed to load favorites', err));
@@ -124,7 +124,7 @@ export default function ItemList() {
   };
 
   async function toggleFavorite(item) {
-    if (!user?.id) {
+    if (!user) {
       alert('Please login to favorite items.');
       return;
     }
@@ -143,7 +143,8 @@ export default function ItemList() {
         const res = await fetch('/api/favorites', {
           method: 'DELETE',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ userId: user.id, itemId })
+          credentials: 'include',
+          body: JSON.stringify({ itemId })
         });
         if (!res.ok) throw new Error('Failed to remove favorite');
       } else {
@@ -152,7 +153,8 @@ export default function ItemList() {
         const res = await fetch('/api/favorites', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ userId: user.id, itemId, itemName })
+          credentials: 'include',
+          body: JSON.stringify({ itemId, itemName })
         });
         if (!res.ok) throw new Error('Failed to add favorite');
       }
@@ -177,11 +179,13 @@ export default function ItemList() {
   }
 
   function handleLogout() {
-    try {
-      localStorage.removeItem('user');
-    } catch {}
-    setUser(null);
-    setFavorites(new Set());
+    fetch('/api/logout', { method: 'POST', credentials: 'include' })
+      .catch(() => {})
+      .finally(() => {
+        try { localStorage.removeItem('user'); } catch {}
+        setUser(null);
+        setFavorites(new Set());
+      });
   }
 
   // Helper function to get GRADIENT color based on rarity
