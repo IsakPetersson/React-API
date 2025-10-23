@@ -1,0 +1,116 @@
+/* Floating bubbles */
+.bubble {
+  position: fixed;
+  bottom: -100px;
+  background: radial-gradient(circle at 30% 30%, rgba(139, 92, 246, 0.15), rgba(236, 72, 153, 0.1));
+  border-radius: 50%;
+  opacity: 0.6;
+  animation: float-up linear infinite;
+  pointer-events: none;
+  z-index: -1;
+  backdrop-filter: blur(2px);
+  border: 1px solid rgba(139, 92, 246, 0.2);
+}
+
+/* Bubble variations with different sizes and speeds */
+.bubble:nth-child(1) {
+  width: 80px;
+  height: 80px;
+  left: 10%;
+  animation-duration: 20s;
+  animation-delay: 0s;
+}
+
+.bubble:nth-child(2) {
+  width: 60px;
+  height: 60px;
+  left: 25%;
+  animation-duration: 25s;
+  animation-delay: 2s;
+}
+
+.bubble:nth-child(3) {
+  width: 100px;
+  height: 100px;
+  left: 40%;
+  animation-duration: 30s;
+  animation-delay: 4s;
+}
+
+.bubble:nth-child(4) {
+  width: 50px;
+  height: 50px;
+  left: 55%;
+  animation-duration: 22s;
+  animation-delay: 6s;
+}
+
+.bubble:nth-child(5) {
+  width: 90px;
+  height: 90px;
+  left: 70%;
+  animation-duration: 28s;
+  animation-delay: 1s;
+}
+
+.bubble:nth-child(6) {
+  width: 70px;
+  height: 70px;
+  left: 85%;
+  animation-duration: 24s;
+  animation-delay: 5s;
+}
+
+.bubble:nth-child(7) {
+  width: 55px;
+  height: 55px;
+  left: 15%;
+  animation-duration: 26s;
+  animation-delay: 3s;
+}
+
+.bubble:nth-child(8) {
+  width: 85px;
+  height: 85px;
+  left: 50%;
+  animation-duration: 32s;
+  animation-delay: 7s;
+}
+
+.bubble:nth-child(9) {
+  width: 65px;
+  height: 65px;
+  left: 35%;
+  animation-duration: 23s;
+  animation-delay: 2s;
+}
+
+.bubble:nth-child(10) {
+  width: 75px;
+  height: 75px;
+  left: 65%;
+  animation-duration: 27s;
+  animation-delay: 4s;
+}
+
+@keyframes float-up {
+  0% {
+    bottom: -100px;
+    opacity: 0;
+    transform: translateX(0) scale(1);
+  }
+  10% {
+    opacity: 0.6;
+  }
+  50% {
+    transform: translateX(20px) scale(1.1);
+  }
+  90% {
+    opacity: 0.6;
+  }
+  100% {
+    bottom: 110vh;
+    opacity: 0;
+    transform: translateX(-20px) scale(0.8);
+  }
+}

@@ -25,3 +25,5 @@ dist-ssr
 
 # Ignore NotEnoughUpdates-REPO
 NotEnoughUpdates-REPO
+
+.env
