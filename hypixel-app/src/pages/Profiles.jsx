@@ -79,39 +79,6 @@ export default function Profiles() {
       // Find the profile info from the list
       const selectedProfile = profilesList.find(p => p.profile_id === profileId);
       
-      // Decode base64 inventory data if present
-      const decodeBase64ToJson = (base64String) => {
-        try {
-          const decodedText = atob(base64String);
-          return JSON.parse(decodedText);
-        } catch (err) {
-          console.error('Decoding error:', err);
-          return null;
-        }
-      };
-
-      // Check and decode inventory fields for each member
-      if (profileData.profile && profileData.profile.members) {
-        Object.values(profileData.profile.members).forEach(member => {
-          [
-            'inv_contents', 'inv_armor', 'ender_chest_contents', 'talisman_bag',
-            'fishing_bag', 'quiver', 'potion_bag', 'accessory_bag_storage', 'inventory'
-          ].forEach(key => {
-            if (member[key] && member[key].data && typeof member[key].data === 'string') {
-              // If data is a base64 string, decode it
-              const decoded = decodeBase64ToJson(member[key].data);
-              // For inventory, always set decoded text for display
-              if (key === 'inventory') {
-                member[key].decodedText = decoded ? JSON.stringify(decoded, null, 2) : '';
-              }
-              if (decoded && Array.isArray(decoded)) {
-                member[key].items = decoded;
-              }
-            }
-          });
-        });
-      }
-
       setPlayerData({
         ign: selectedProfile?.cute_name || 'Unknown',
         uuid: selectedProfile?.uuid || 'Unknown',

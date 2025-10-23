@@ -1,4 +1,6 @@
 import { useState } from "react";
+import pako from "pako";
+import nbt from "prismarine-nbt";
 
 export default function Players({ playerData }) {
   const [inventoryType, setInventoryType] = useState("inv_contents");
@@ -12,19 +14,25 @@ export default function Players({ playerData }) {
     { key: "equipment_contents", name: "Equipment" },
     { key: "personal_vault_contents", name: "Personal Vault" },
     { key: "wardrobe_equipped_slot", name: "Wardrobe Equipped Slot" },
-      // Base64 + Gzipped NBT data (fallback: just decode base64 to string, try JSON.parse)
+    { key: "sacks_counts", name: "Sacks Counts" },
+    { key: "wardrobe_contents", name: "Wardrobe Contents" }
+  ];
+
+  const renderInventory = (inventory) => {
+    if (!inventory) {
+      return (
+        <div className="alert alert-warning">
+          <p>No inventory data available for this type.</p>
+        </div>
+      );
+    }
+    
+    // Check for different inventory data structures
+    if (inventory.data) {
+      // Base64 + Gzipped NBT data
       let decodedText = '';
-      let parsedJson = null;
+      let nbtJson = null;
       try {
-        decodedText = atob(inventory.data);
-        try {
-          parsedJson = JSON.parse(decodedText);
-        } catch (e) {
-          parsedJson = null;
-        }
-      } catch (e) {
-        decodedText = 'Failed to decode base64.';
-      }
         // Decode base64 to Uint8Array
         const binaryString = atob(inventory.data);
         const len = binaryString.length;
