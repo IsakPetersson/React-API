@@ -3,6 +3,7 @@ import NavBar from "./components/NavBar";
 import { Routes, Route } from "react-router-dom";
 import Items from "./pages/Items";
 import Login from "./pages/Login";
+import Profiles from "./pages/Profiles";
 import Register from "./pages/Register";
 import Tos from "./pages/Tos";
 import "./bubbles.css"; // Import bubble styles
@@ -27,14 +28,13 @@ function App() {
   return (
     <div className="app-container">
       <NavBar />
-      <main className="main-content">
-        <Routes>
-          <Route path="/" element={<Items />} />
-          <Route path="/login" element={<Login />} />
-          <Route path="/register" element={<Register />} />
-          <Route path="/tos" element={<Tos />} />
-        </Routes>
-      </main>
+      <Routes>
+        <Route path="/" element={<Items />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/profiles" element={<Profiles />} />
+        <Route path="/register" element={<Register />} />
+        <Route path="/tos" element={<Tos />} />
+      </Routes>
     </div>
   );
 }

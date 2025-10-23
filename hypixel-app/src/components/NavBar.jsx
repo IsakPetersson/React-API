@@ -110,6 +110,9 @@ export default function NavBar() {
             <Link to="/" onClick={closeMenu}>Items</Link>
           </li>
           <li>
+            <Link to="/profiles" onClick={closeMenu}>Player Profiles</Link>
+          </li>
+          <li>
             {isLoggedIn ? (
               <a href="#" onClick={(e) => { e.preventDefault(); handleLogout(); }}>
                 Logout
