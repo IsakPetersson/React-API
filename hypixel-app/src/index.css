@@ -155,7 +155,7 @@ body {
   height: 100%;
   display: flex;
   flex-direction: column;
-  margin: 10px;
+  margin: 4px;
 }
 
 .card li {
@@ -180,7 +180,6 @@ body {
   height: auto;
   object-fit: contain;
   aspect-ratio: 180 / 191;
-  
 }
 
 .card:hover {
@@ -784,7 +783,7 @@ button:focus-visible {
     width: calc(100% + 6rem);
     margin: -3rem -3rem 0 -3rem;
     padding: 6rem 2rem; /* Maintain desktop padding */
-    min-height: 60vh;
+    min-height: 70vh;
   }
 }
 
