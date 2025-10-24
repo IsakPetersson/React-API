@@ -264,27 +264,10 @@ export default function Profiles() {
     <div className="center-container">
       <h1 className="text-center mb-4 mainTitle">Skyblock Inventory Viewer</h1>
       
-      <div className="alert alert-info" role="alert">
-        <strong>Note:</strong> {useMockData ? "Using mock data for testing." : "This uses CORS proxies to access the Hypixel API. If it fails, try again or use mock data."}
-      </div>
-      
       <div className="card mb-4">
         <div className="card-body">
           <h5 className="card-title">API Configuration</h5>
-          <div className="mb-3">
-            <div className="form-check mb-3">
-              <input
-                className="form-check-input"
-                type="checkbox"
-                id="useMockData"
-                checked={useMockData}
-                onChange={(e) => setUseMockData(e.target.checked)}
-              />
-              <label className="form-check-label" htmlFor="useMockData">
-                Use mock data for testing
-              </label>
-            </div>
-            
+          <div className="mb-3">           
             {!useMockData && (
               <>
                 <label htmlFor="apiKey" className="form-label">Hypixel API Key</label>
@@ -333,98 +316,6 @@ export default function Profiles() {
             </div>
           </form>
           
-          {/* Debug buttons */}
-          <div className="mt-3">
-            <button 
-              className="btn btn-sm btn-outline-secondary me-2"
-              onClick={() => {
-                console.log('Testing CORS proxy 1...');
-                fetch('https://api.allorigins.win/raw?url=' + encodeURIComponent('https://api.mojang.com/users/profiles/minecraft/Dream'))
-                  .then(res => {
-                    console.log('CORS proxy 1 response:', res.status, res.statusText);
-                    return res.text();
-                  })
-                  .then(text => console.log('CORS proxy 1 response text:', text))
-                  .catch(err => console.error('CORS proxy 1 error:', err));
-              }}
-            >
-              Test CORS Proxy 1
-            </button>
-            <button 
-              className="btn btn-sm btn-outline-secondary me-2"
-              onClick={() => {
-                console.log('Testing CORS proxy 3...');
-                fetch('https://corsproxy.io/?https://api.mojang.com/users/profiles/minecraft/Dream')
-                  .then(res => {
-                    console.log('CORS proxy 3 response:', res.status, res.statusText);
-                    return res.text();
-                  })
-                  .then(text => console.log('CORS proxy 3 response text:', text))
-                  .catch(err => console.error('CORS proxy 3 error:', err));
-              }}
-            >
-              Test CORS Proxy 3
-            </button>
-            <button 
-              className="btn btn-sm btn-outline-secondary me-2"
-              onClick={() => {
-                console.log('Testing CORS proxy 4...');
-                fetch('https://thingproxy.freeboard.io/fetch/https://api.mojang.com/users/profiles/minecraft/Dream')
-                  .then(res => {
-                    console.log('CORS proxy 4 response:', res.status, res.statusText);
-                    return res.text();
-                  })
-                  .then(text => console.log('CORS proxy 4 response text:', text))
-                  .catch(err => console.error('CORS proxy 4 error:', err));
-              }}
-            >
-              Test CORS Proxy 4
-            </button>
-            <button 
-              className="btn btn-sm btn-outline-secondary me-2"
-              onClick={() => {
-                console.log('Testing CORS proxy 5...');
-                fetch('https://api.codetabs.com/v1/proxy?quest=https://api.mojang.com/users/profiles/minecraft/Dream')
-                  .then(res => {
-                    console.log('CORS proxy 5 response:', res.status, res.statusText);
-                    return res.text();
-                  })
-                  .then(text => console.log('CORS proxy 5 response text:', text))
-                  .catch(err => console.error('CORS proxy 5 error:', err));
-              }}
-            >
-              Test CORS Proxy 5
-            </button>
-            <button 
-              className="btn btn-sm btn-outline-warning"
-              onClick={() => {
-                if (!apiKey.trim()) {
-                  alert('Please enter your API key first');
-                  return;
-                }
-                console.log('Testing Hypixel API directly...');
-                const testUrl = `https://api.hypixel.net/v2/skyblock/profiles?key=${apiKey}&uuid=ec70bcaf702f4bb8b48d276fa52a780c`;
-                console.log('Testing URL:', testUrl);
-                fetch('https://api.allorigins.win/raw?url=' + encodeURIComponent(testUrl))
-                  .then(res => {
-                    console.log('Hypixel API response:', res.status, res.statusText);
-                    return res.text();
-                  })
-                  .then(text => {
-                    console.log('Hypixel API response text:', text);
-                    try {
-                      const data = JSON.parse(text);
-                      console.log('Parsed Hypixel data:', data);
-                    } catch (e) {
-                      console.log('Could not parse as JSON:', e);
-                    }
-                  })
-                  .catch(err => console.error('Hypixel API error:', err));
-              }}
-            >
-              Test Hypixel API
-            </button>
-          </div>
         </div>
       </div>
       

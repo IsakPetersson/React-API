@@ -1,9 +1,13 @@
 import { useState } from "react";
-import pako from "pako";
-import nbt from "prismarine-nbt";
+import ItemCard from "./ItemCard";
 
 export default function Players({ playerData }) {
   const [inventoryType, setInventoryType] = useState("inv_contents");
+  const [selectedItem, setSelectedItem] = useState(null);
+  const [selectedSection, setSelectedSection] = useState(null);
+  const [selectedSectionChild, setSelectedSectionChild] = useState(null);
+  const [selectedInventoryField, setSelectedInventoryField] = useState(null);
+  const [selectedInventoryChild, setSelectedInventoryChild] = useState(null);
 
   // Updated inventory types based on API response
   const inventoryTypes = [
@@ -29,39 +33,59 @@ export default function Players({ playerData }) {
     
     // Check for different inventory data structures
     if (inventory.data) {
-      // Base64 + Gzipped NBT data
+      // Inventory may be base64-encoded JSON or NBT. We'll try a safe base64 -> JSON decode first
       let decodedText = '';
-      let nbtJson = null;
+      let parsed = null;
       try {
-        // Decode base64 to Uint8Array
         const binaryString = atob(inventory.data);
-        const len = binaryString.length;
-        const bytes = new Uint8Array(len);
-        for (let i = 0; i < len; i++) {
-          bytes[i] = binaryString.charCodeAt(i);
+        // Try to parse as JSON directly
+        try {
+          parsed = JSON.parse(binaryString);
+          decodedText = JSON.stringify(parsed, null, 2);
+        } catch (e) {
+          // If JSON parse failed, show truncated base64-decoded text for inspection
+          decodedText = binaryString.substring(0, 5000);
         }
-        // Decompress gzip
-        const decompressed = pako.ungzip(bytes);
-        // Parse NBT
-        nbtJson = nbt.parse(decompressed.buffer).parsed;
-        decodedText = JSON.stringify(nbtJson, null, 2);
       } catch (e) {
-        decodedText = 'Failed to decode and parse NBT: ' + e.message;
+        decodedText = 'Failed to base64-decode inventory data: ' + e.message;
       }
+
       return (
         <div>
           <div className="alert alert-success mb-3">
-            <h6>✅ Inventory Data Found!</h6>
+            <h6>✅ Encoded Inventory Data Found</h6>
             <p>This inventory contains {inventory.data.length} characters of encoded data.</p>
             <p><strong>Data Type:</strong> {inventory.type || 'Unknown'}</p>
           </div>
-          {/* Show decoded NBT as formatted JSON if possible */}
           <div className="card mb-3">
             <div className="card-header">
-              <h6>Decoded Inventory Data (NBT)</h6>
+              <h6>Decoded Inventory Preview</h6>
             </div>
             <div className="card-body">
-              <pre className="small" style={{maxHeight: '200px', overflow: 'auto', fontSize: '0.7rem'}}>{decodedText.substring(0, 5000)}</pre>
+              {parsed && parsed.items && Array.isArray(parsed.items) ? (
+                <div>
+                  <div className="row">
+                    {parsed.items.map((it, i) => (
+                      <div key={i} className="col-6 col-sm-4 col-md-3 col-lg-2 mb-3">
+                        <ItemCard item={it} onClick={() => setSelectedItem(it)} />
+                      </div>
+                    ))}
+                  </div>
+                  {selectedItem && (
+                    <div className="card mt-3">
+                      <div className="card-header d-flex justify-content-between align-items-center">
+                        <strong>Selected Item</strong>
+                        <button className="btn btn-sm btn-outline-secondary" onClick={() => setSelectedItem(null)}>Close</button>
+                      </div>
+                      <div className="card-body">
+                        <pre className="small" style={{maxHeight: '300px', overflow: 'auto'}}>{JSON.stringify(selectedItem, null, 2)}</pre>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              ) : (
+                <pre className="small" style={{maxHeight: '300px', overflow: 'auto'}}>{decodedText}</pre>
+              )}
             </div>
           </div>
         </div>
@@ -78,62 +102,162 @@ export default function Players({ playerData }) {
           <div className="row">
             {inventory.items.map((item, index) => (
               <div key={index} className="col-6 col-sm-4 col-md-3 col-lg-2 mb-3">
-                <div className="card h-100">
-                  <div className="card-body p-2">
-                    <div className="fw-semibold" style={{fontSize: '0.9rem'}}>
-                      {item.name || item.id || 'Unknown Item'}
-                    </div>
-                    <div className="text-muted" style={{fontSize: '0.8rem'}}>
-                      x{item.count || item.amount || 1}
-                    </div>
-                    {item.rarity && (
-                      <span className={`badge badge-sm ${
-                        item.rarity === 'COMMON' ? 'bg-secondary' :
-                        item.rarity === 'UNCOMMON' ? 'bg-success' :
-                        item.rarity === 'RARE' ? 'bg-primary' :
-                        item.rarity === 'EPIC' ? 'bg-warning' : 'bg-info'
-                      }`} style={{fontSize: '0.7rem'}}>
-                        {item.rarity}
-                      </span>
-                    )}
-                  </div>
-                </div>
+                <ItemCard item={item} onClick={() => setSelectedItem(item)} />
               </div>
             ))}
           </div>
+          {selectedItem && (
+            <div className="card mt-3">
+              <div className="card-header d-flex justify-content-between align-items-center">
+                <strong>Selected Item</strong>
+                <button className="btn btn-sm btn-outline-secondary" onClick={() => setSelectedItem(null)}>Close</button>
+              </div>
+              <div className="card-body">
+                <pre className="small" style={{maxHeight: '300px', overflow: 'auto'}}>{JSON.stringify(selectedItem, null, 2)}</pre>
+              </div>
+            </div>
+          )}
         </div>
       );
     } else {
-      // Attempt to display contents of all fields
+      // Attempt to display contents of all fields — render as cards instead of raw JSON
+      const invFields = Object.keys(inventory || {});
+
       return (
-        <div className="alert alert-info">
-          <h6>Inventory Data Structure</h6>
-          <p>This inventory has a different data structure than expected.</p>
-          <p><strong>Available fields:</strong> {Object.keys(inventory).join(', ')}</p>
-          <div className="mt-3">
-            {Object.entries(inventory).map(([key, value]) => (
-              <div key={key} className="mb-3">
-                <h6 className="small">{key}</h6>
-                {Array.isArray(value) ? (
-                  <ul className="small">
-                    {value.map((item, idx) => (
-                      <li key={idx}>{typeof item === 'object' ? JSON.stringify(item) : String(item)}</li>
-                    ))}
-                  </ul>
-                ) : typeof value === 'object' && value !== null ? (
-                  <pre className="small" style={{maxHeight: '150px', overflow: 'auto', fontSize: '0.7rem'}}>{JSON.stringify(value, null, 2)}</pre>
-                ) : (
-                  <span className="small">{String(value)}</span>
-                )}
-              </div>
-            ))}
+        <div>
+          <div className="alert alert-info mb-3">
+            <h6>Inventory Data Structure</h6>
+            <p>This inventory has a different data structure than expected.</p>
+            <p><strong>Available fields:</strong> {invFields.join(', ')}</p>
           </div>
-          <details className="mt-3">
-            <summary className="btn btn-sm btn-outline-info">Show Raw Inventory Data</summary>
-            <pre className="mt-2 small" style={{maxHeight: '200px', overflow: 'auto', fontSize: '0.7rem'}}>
-              {JSON.stringify(inventory, null, 2)}
-            </pre>
-          </details>
+
+          <div className="row">
+            {invFields.map((field) => {
+              const val = inventory[field];
+              const isEmpty = val && typeof val === 'object' && Object.keys(val).length === 0;
+              const summary = Array.isArray(val) ? `${val.length} entries` : (val && typeof val === 'object' ? `${Object.keys(val).length} keys` : String(val));
+              return (
+                <div key={field} className="col-6 col-md-4 col-lg-3 mb-3">
+                  <div className="card h-100" style={{cursor: 'pointer'}} onClick={() => { setSelectedInventoryField(field === selectedInventoryField ? null : field); setSelectedInventoryChild(null); }}>
+                    <div className="card-body d-flex flex-column align-items-center">
+                      <div style={{width: '72px', height: '72px'}}>
+                        <img src={new URL(`../images/placeholder.png`, import.meta.url).href} alt={field} style={{width: '100%', height: '100%', objectFit: 'contain'}} />
+                      </div>
+                      <div className="fw-semibold mt-2">{field}</div>
+                      <div className="text-muted small">{isEmpty ? 'Empty' : summary}</div>
+                    </div>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+
+          {selectedInventoryField && (
+            <div className="card mt-3">
+              <div className="card-header d-flex justify-content-between align-items-center">
+                <strong>{selectedInventoryField}</strong>
+                <button className="btn btn-sm btn-outline-secondary" onClick={() => { setSelectedInventoryField(null); setSelectedInventoryChild(null); }}>Close</button>
+              </div>
+              <div className="card-body">
+                {(() => {
+                  const sectionValue = inventory[selectedInventoryField];
+                  if (sectionValue == null) return <div className="text-muted">No data</div>;
+
+                  if (Array.isArray(sectionValue)) {
+                    return (
+                      <div className="row">
+                        {sectionValue.map((it, i) => (
+                          <div key={i} className="col-6 col-sm-4 col-md-3 col-lg-2 mb-3">
+                            <ItemCard item={typeof it === 'object' ? it : { name: String(it) }} onClick={() => setSelectedInventoryChild(i)} />
+                          </div>
+                        ))}
+                        {selectedInventoryChild !== null && (
+                          <div className="col-12 mt-3">
+                            <div className="card">
+                              <div className="card-header d-flex justify-content-between align-items-center">
+                                <strong>Entry {selectedInventoryChild}</strong>
+                                <button className="btn btn-sm btn-outline-secondary" onClick={() => setSelectedInventoryChild(null)}>Close</button>
+                              </div>
+                              <div className="card-body">
+                                <pre className="small" style={{maxHeight: '400px', overflow: 'auto'}}>{JSON.stringify(sectionValue[selectedInventoryChild], null, 2)}</pre>
+                              </div>
+                            </div>
+                          </div>
+                        )}
+                      </div>
+                    );
+                  }
+
+                  if (typeof sectionValue === 'object') {
+                    const childKeys = Object.keys(sectionValue);
+                    if (childKeys.length === 0) return <div className="text-muted">Empty</div>;
+
+                    return (
+                      <div className="row">
+                        <div className="col-lg-8">
+                          <div className="row">
+                            {childKeys.map((childKey) => (
+                              <div key={childKey} className="col-6 col-md-4 mb-3">
+                                <div className={`card h-100 ${selectedInventoryChild === childKey ? 'border-primary' : ''}`} style={{cursor: 'pointer'}} onClick={() => setSelectedInventoryChild(childKey)}>
+                                  <div className="card-body">
+                                    <div className="fw-semibold">{childKey}</div>
+                                    <div className="text-muted small">{Array.isArray(sectionValue[childKey]) ? `${sectionValue[childKey].length} items` : (sectionValue[childKey] && typeof sectionValue[childKey] === 'object' ? `${Object.keys(sectionValue[childKey]).length} keys` : String(sectionValue[childKey]))}</div>
+                                  </div>
+                                </div>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                        <div className="col-lg-4 mt-3 mt-lg-0">
+                          {selectedInventoryChild ? (
+                            <div className="card h-100">
+                              <div className="card-header d-flex justify-content-between align-items-center">
+                                <strong>{selectedInventoryChild}</strong>
+                                <button className="btn btn-sm btn-outline-secondary" onClick={() => setSelectedInventoryChild(null)}>Close</button>
+                              </div>
+                              <div className="card-body">
+                                {(() => {
+                                  const v = sectionValue[selectedInventoryChild];
+                                  if (v == null) return <div className="text-muted">No data</div>;
+                                  if (Array.isArray(v)) {
+                                    return (
+                                      <div>
+                                        <h6 className="small">Array ({v.length})</h6>
+                                        <ul className="small">
+                                          {v.map((it, idx) => <li key={idx}>{typeof it === 'object' ? JSON.stringify(it) : String(it)}</li>)}
+                                        </ul>
+                                      </div>
+                                    );
+                                  }
+                                  if (typeof v === 'object') {
+                                    return (
+                                      <div>
+                                        {Object.entries(v).map(([k, val]) => (
+                                          <div key={k} className="mb-2">
+                                            <div className="small text-muted">{k}</div>
+                                            <div className="small">{typeof val === 'object' ? JSON.stringify(val) : String(val)}</div>
+                                          </div>
+                                        ))}
+                                      </div>
+                                    );
+                                  }
+                                  return <div className="small">{String(v)}</div>;
+                                })()}
+                              </div>
+                            </div>
+                          ) : (
+                            <div className="text-muted small">Select a child to view details</div>
+                          )}
+                        </div>
+                      </div>
+                    );
+                  }
+
+                  return <pre className="small" style={{maxHeight: '400px', overflow: 'auto'}}>{JSON.stringify(sectionValue, null, 2)}</pre>;
+                })()}
+              </div>
+            </div>
+          )}
         </div>
       );
     }
@@ -212,27 +336,23 @@ export default function Players({ playerData }) {
                   <h6>📦 Detailed Inventory for First Member</h6>
                 </div>
                 <div className="card-body">
-                  <div className="mb-3">
-                    <label htmlFor="inventoryType" className="form-label">Select Inventory Type:</label>
-                    <select 
-                      className="form-select" 
-                      id="inventoryType"
-                      value={inventoryType}
-                      onChange={(e) => setInventoryType(e.target.value)}
-                    >
-                      {availableTypes.map(typeKey => (
-                        <option key={typeKey} value={typeKey}>{typeKey}</option>
-                      ))}
-                    </select>
-                  </div>
-                  {firstMember[inventoryType] ? (
-                    renderInventory(firstMember[inventoryType])
-                  ) : (
-                    <div className="alert alert-warning">
-                      <p>No {inventoryType} data available for this member.</p>
-                      <p className="mb-0 small">Available inventory types: {availableTypes.join(', ') || 'None'}</p>
-                    </div>
-                  )}
+                  {/* Automatically pick the first available inventory type for this member (dropdown removed) */}
+                  {(() => {
+                    const displayType = availableTypes.includes(inventoryType) ? inventoryType : (availableTypes[0] || inventoryType);
+                    return (
+                      <div>
+                        <p className="small text-muted">Showing inventory type: <strong>{displayType}</strong></p>
+                        {firstMember[displayType] ? (
+                          renderInventory(firstMember[displayType])
+                        ) : (
+                          <div className="alert alert-warning">
+                            <p>No {displayType} data available for this member.</p>
+                            <p className="mb-0 small">Available inventory types: {availableTypes.join(', ') || 'None'}</p>
+                          </div>
+                        )}
+                      </div>
+                    );
+                  })()}
                 </div>
               </div>
             </div>
@@ -241,71 +361,164 @@ export default function Players({ playerData }) {
       );
     }
 
-    // No members found - show profile-level inventory or explain
+  // No members found - show profile-level sections as cards (not plain text)
+  // We'll present each top-level field as a card with a small image and allow expanding to view details
+  const fields = Object.keys(profile);
+
+    const sectionImageMap = {
+      village_plaza: 'DIAMOND_SWORD.png',
+      wither_cage: 'DIAMOND_SWORD.png',
+      black_lagoon: 'DIAMOND_SWORD.png',
+      dead_cats: 'DIAMOND_SWORD.png',
+      wizard_tower: 'DIAMOND_SWORD.png',
+      enigma: 'DIAMOND_SWORD.png',
+      gallery: 'DIAMOND_SWORD.png',
+      west_village: 'DIAMOND_SWORD.png',
+      wyld_woods: 'DIAMOND_SWORD.png',
+      castle: 'DIAMOND_SWORD.png',
+      access: 'PAPER.png',
+      dreadfarm: 'DIAMOND_SWORD.png'
+    };
+
     return (
       <div>
         <div className="alert alert-info mb-3">
-          <h6>📋 Profile Structure</h6>
-          <p>This profile doesn't have member data. Inventory data is typically stored in profile members.</p>
-        </div>
-        
-        <div className="mb-3">
-          <label htmlFor="inventoryType" className="form-label">Select Inventory Type:</label>
-          <select 
-            className="form-select" 
-            id="inventoryType"
-            value={inventoryType}
-            onChange={(e) => setInventoryType(e.target.value)}
-          >
-            {inventoryTypes.map(type => (
-              <option key={type.key} value={type.key}>{type.name}</option>
-            ))}
-          </select>
+          <h6>📋 Profile Sections</h6>
+          <p>Click a section to view its details visually.</p>
         </div>
 
-        {profile[inventoryType] ? (
-          renderInventory(profile[inventoryType])
-        ) : (
-          <div className="alert alert-warning">
-            <p>No {inventoryTypes.find(t => t.key === inventoryType)?.name} data available for this profile.</p>
-            <p className="mb-0 small">Available inventory types: {Object.keys(profile).filter(key => key.includes('inv') || key.includes('bag') || key.includes('chest')).join(', ') || 'None'}</p>
-            
-            <div className="mt-2">
-              <h6>Why no inventory data?</h6>
-              <ul className="small mb-0">
-                <li>The player may have <strong>inventory API disabled</strong> in their Hypixel settings</li>
-                <li>This profile might be <strong>new or inactive</strong> with no inventory data</li>
-                <li>The player might be using <strong>private inventory settings</strong></li>
-                <li>Some profiles don't store inventory data in the API</li>
-              </ul>
-            </div>
-            
-            {/* Show what data is actually available */}
-            <div className="mt-3">
-              <details>
-                <summary className="btn btn-sm btn-outline-info">Show Available Profile Data</summary>
-                <div className="mt-2">
-                  <p className="small text-muted mb-2">Profile contains these fields:</p>
-                  <div className="row">
-                    {Object.keys(profile).map((key, index) => (
-                      <div key={index} className="col-6 col-md-4 col-lg-3 mb-1">
-                        <span className="badge bg-light text-dark border">{key}</span>
-                      </div>
-                    ))}
-                  </div>
-                  
-                  {/* Show some basic profile info */}
-                  <div className="mt-3">
-                    <h6>Profile Summary:</h6>
-                    <ul className="small">
-                      <li><strong>Profile ID:</strong> {profile.profile_id || 'Unknown'}</li>
-                      <li><strong>Created:</strong> {profile.created_at ? new Date(profile.created_at).toLocaleString() : 'Unknown'}</li>
-                      <li><strong>Members:</strong> {profile.members ? Object.keys(profile.members).length : 0}</li>
-                      <li><strong>Community Upgrades:</strong> {profile.community_upgrades ? 'Available' : 'None'}</li>
-                    </ul>
+        <div className="row">
+          {fields.map((field) => {
+            const img = sectionImageMap[field] || 'placeholder.png';
+            const imgSrc = new URL(`../images/${img}`, import.meta.url).href;
+            const value = profile[field];
+            const isEmpty = value && Object.keys(value).length === 0;
+            return (
+              <div key={field} className="col-6 col-md-4 col-lg-3 mb-3">
+                <div className="card h-100" style={{cursor: 'pointer'}} onClick={() => { setSelectedSection(field === selectedSection ? null : field); setSelectedSectionChild(null); }}>
+                  <div className="card-body d-flex flex-column align-items-center">
+                    <div style={{width: '72px', height: '72px'}}>
+                      <img src={imgSrc} alt={field} style={{width: '100%', height: '100%', objectFit: 'contain'}} />
+                    </div>
+                    <div className="fw-semibold mt-2">{field}</div>
+                    <div className="text-muted small">{isEmpty ? 'Empty' : Array.isArray(value) ? `${value.length} entries` : Object.keys(value).length + ' keys'}</div>
                   </div>
                 </div>
-              </details>
+              </div>
+            );
+          })}
+        </div>
+
+        {selectedSection && (
+          <div className="card mt-3">
+            <div className="card-header d-flex justify-content-between align-items-center">
+              <strong>{selectedSection}</strong>
+              <button className="btn btn-sm btn-outline-secondary" onClick={() => { setSelectedSection(null); setSelectedSectionChild(null); }}>Close</button>
+            </div>
+            <div className="card-body">
+              {(() => {
+                const sectionValue = profile[selectedSection];
+                if (sectionValue == null) return <div className="text-muted">No data</div>;
+
+                // If it's an array of items, attempt to render as item cards
+                if (Array.isArray(sectionValue)) {
+                  return (
+                    <div className="row">
+                      {sectionValue.map((it, i) => (
+                        <div key={i} className="col-6 col-sm-4 col-md-3 col-lg-2 mb-3">
+                          <ItemCard item={typeof it === 'object' ? it : { name: String(it) }} onClick={() => setSelectedSectionChild(i)} />
+                        </div>
+                      ))}
+                      {selectedSectionChild !== null && (
+                        <div className="col-12 mt-3">
+                          <div className="card">
+                            <div className="card-header d-flex justify-content-between align-items-center">
+                              <strong>Entry {selectedSectionChild}</strong>
+                              <button className="btn btn-sm btn-outline-secondary" onClick={() => setSelectedSectionChild(null)}>Close</button>
+                            </div>
+                            <div className="card-body">
+                              <pre className="small" style={{maxHeight: '400px', overflow: 'auto'}}>{JSON.stringify(sectionValue[selectedSectionChild], null, 2)}</pre>
+                            </div>
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  );
+                }
+
+                // If it's an object, render child keys as cards
+                if (typeof sectionValue === 'object') {
+                  const childKeys = Object.keys(sectionValue);
+                  if (childKeys.length === 0) return <div className="text-muted">Empty</div>;
+
+                  return (
+                    <div className="row">
+                      <div className="col-lg-8">
+                        <div className="row">
+                          {childKeys.map((childKey) => {
+                            const childVal = sectionValue[childKey];
+                            const summary = Array.isArray(childVal) ? `${childVal.length} items` : (childVal && typeof childVal === 'object' ? `${Object.keys(childVal).length} keys` : String(childVal));
+                            return (
+                              <div key={childKey} className="col-6 col-md-4 mb-3">
+                                <div className={`card h-100 ${selectedSectionChild === childKey ? 'border-primary' : ''}`} style={{cursor: 'pointer'}} onClick={() => setSelectedSectionChild(childKey)}>
+                                  <div className="card-body">
+                                    <div className="fw-semibold">{childKey}</div>
+                                    <div className="text-muted small">{summary}</div>
+                                  </div>
+                                </div>
+                              </div>
+                            );
+                          })}
+                        </div>
+                      </div>
+                      <div className="col-lg-4 mt-3 mt-lg-0">
+                        {selectedSectionChild ? (
+                          <div className="card h-100">
+                            <div className="card-header d-flex justify-content-between align-items-center">
+                              <strong>{selectedSectionChild}</strong>
+                              <button className="btn btn-sm btn-outline-secondary" onClick={() => setSelectedSectionChild(null)}>Close</button>
+                            </div>
+                            <div className="card-body">
+                              {(() => {
+                                const v = sectionValue[selectedSectionChild];
+                                if (v == null) return <div className="text-muted">No data</div>;
+                                if (Array.isArray(v)) {
+                                  return (
+                                    <div>
+                                      <h6 className="small">Array ({v.length})</h6>
+                                      <ul className="small">
+                                        {v.map((it, idx) => <li key={idx}>{typeof it === 'object' ? JSON.stringify(it) : String(it)}</li>)}
+                                      </ul>
+                                    </div>
+                                  );
+                                }
+                                if (typeof v === 'object') {
+                                  return (
+                                    <div>
+                                      {Object.entries(v).map(([k, val]) => (
+                                        <div key={k} className="mb-2">
+                                          <div className="small text-muted">{k}</div>
+                                          <div className="small">{typeof val === 'object' ? JSON.stringify(val) : String(val)}</div>
+                                        </div>
+                                      ))}
+                                    </div>
+                                  );
+                                }
+                                return <div className="small">{String(v)}</div>;
+                              })()}
+                            </div>
+                          </div>
+                        ) : (
+                          <div className="text-muted small">Select a child to view details</div>
+                        )}
+                      </div>
+                    </div>
+                  );
+                }
+
+                // Fallback: show raw JSON
+                return <pre className="small" style={{maxHeight: '400px', overflow: 'auto'}}>{JSON.stringify(sectionValue, null, 2)}</pre>;
+              })()}
             </div>
           </div>
         )}
