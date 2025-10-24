@@ -7,25 +7,20 @@ export default function LoginCard() {
     const [success, setSuccess] = useState("");
     const navigate = useNavigate();
 
-    async function onLogin(username, password) {
-        setLoading(true);
-        setError("");
-        setSuccess("");
+   async function onLogin(username, password) {
         try {
+            setLoading(true); setError(""); setSuccess("");
             const res = await fetch('/api/login', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ username, password })
-            });
-            const data = await res.json();
-            if (!res.ok) throw new Error(data?.error || 'Login failed');
-            // Persist user to localStorage so Items page can load their favorites
-            if (data?.user) {
-                try { localStorage.setItem('user', JSON.stringify(data.user)); } catch {}
-            }
-            setSuccess(`Welcome, ${data?.user?.username || username}! Redirecting...`);
-            // Short delay for UX, then navigate to home
-            setTimeout(() => navigate('/'), 300);
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            credentials: 'include', // important for cookie
+            body: JSON.stringify({ username, password })
+        });
+        if (!res.ok) throw new Error('Login failed');
+        const data = await res.json();
+        localStorage.setItem('user', JSON.stringify(data.user));
+        setSuccess(`Welcome ${data.user.username}. Redirecting...`);
+        setTimeout(() => navigate('/'), 500);
         } catch (e) {
             setError(e.message);
         } finally {
@@ -33,7 +28,7 @@ export default function LoginCard() {
         }
     }
     return (
-        <div className="card mx-auto mt-5" style={{ maxWidth: "60%", minWidth: "40%", backgroundColor: "#222" }}>
+        <div className="card mx-auto mt-5" style={{ width: "100%", maxWidth: "520px", backgroundColor: "#222" }}>
             <div className="card-body" style={{ backgroundColor: "#222" }}>
                 <form
                     onSubmit={e => {
